@@ -94,11 +94,12 @@ export function Realisations() {
           <div className={styles.headText}>
             <p className={styles.eyebrow}>Réalisations</p>
             <h2 id="portfolio-title" className={styles.title}>
-              Des sites qui travaillent pour leurs clients
+              Des sites internet qui travaillent pour leurs clients
             </h2>
             <p className={styles.lede}>
-              Commerces, artisans et indépendants du bassin franco-suisse qui
-              nous ont confié leur présence en ligne.
+              Commerces, artisans et indépendants du Pays de Gex, de l&apos;Ain
+              et de la région de Genève qui nous ont confié la création de leur
+              site.
             </p>
           </div>
 

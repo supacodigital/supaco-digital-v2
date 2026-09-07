@@ -1,0 +1,177 @@
+/* Page /services — index des piliers. Fond sombre (thème global). */
+.wrap {
+  padding-top: clamp(1.5rem, 5vw, 3rem);
+  padding-bottom: var(--space-section);
+}
+
+.head {
+  max-width: 44rem;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--brand-gradient-bright);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.title {
+  margin-top: 0.85rem;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.lede {
+  margin-top: 1.15rem;
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* --- Grille de cartes --- */
+.grid {
+  list-style: none;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+}
+
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: var(--radius-lg);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    transform 190ms var(--ease-out),
+    border-color 190ms var(--ease-out),
+    box-shadow 190ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cardLink:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+  }
+
+  .cardLink:hover .cardMore {
+    gap: 0.7rem;
+    color: var(--brand-cyan);
+  }
+}
+
+.cardLink:active {
+  transform: translateY(-1px) scale(0.995);
+  transition-duration: 120ms;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+}
+
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  color: var(--brand-cyan);
+  background: var(--brand-gradient-soft);
+  box-shadow: inset 0 0 0 1px var(--border-hairline);
+}
+
+.cardTitle {
+  margin-top: 1.35rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.cardText {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.cardMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition:
+    gap 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+
+/* --- Bloc CTA --- */
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  border-radius: var(--radius-lg);
+  background: var(--brand-gradient-soft);
+  border: 1px solid var(--border-soft);
+}
+
+.ctaKicker {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-cyan);
+}
+
+.ctaTitle {
+  margin-top: 0.35rem;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardLink,
+  .cardMore {
+    transition: none;
+  }
+  .cardLink:hover {
+    transform: none;
+  }
+}

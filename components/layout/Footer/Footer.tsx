@@ -10,8 +10,8 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { Logo } from "@/components/ui/SupacoMark";
 import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
 import { site, services } from "@/lib/site";
+import { FooterCta } from "./FooterCta";
 import styles from "./Footer.module.css";
 
 // année de création → borne basse du copyright (stable au build)
@@ -37,7 +37,7 @@ const footerNav = {
     { label: "Réalisations", href: "/#portfolio" },
     { label: "Tarifs", href: "/tarifs" },
     { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/contact" },
+    { label: "Contact", href: "/#contact" },
     { label: "Mentions légales", href: "/mentions-legales" },
   ],
 };
@@ -48,27 +48,18 @@ export function Footer() {
   return (
     <footer className={styles.footer}>
       <Container as="div">
-        {/* Rappel de conversion */}
-        <div className={styles.cta}>
-          <div>
-            <p className={styles.ctaKicker}>Un projet en tête ?</p>
-            <p className={styles.ctaTitle}>
-              Parlons de votre site ou de votre outil IA.
-            </p>
-          </div>
-          <Button href="/contact" size="lg">
-            Demander un devis
-          </Button>
-        </div>
+        {/* Rappel de conversion — masqué là où la page a déjà son CTA */}
+        <FooterCta />
 
         <div className={styles.grid}>
           {/* Identité + coordonnées */}
           <div className={styles.brand}>
             <Logo asLink />
             <p className={styles.pitch}>
-              Studio web &amp; IA basé à Saint-Genis-Pouilly. Sites vitrines,
-              e-commerce, agents IA et automatisations pour les TPE, PME et
-              artisans du Pays de Gex et du bassin franco-suisse.
+              Agence web basée à Saint-Genis-Pouilly. Création de sites
+              internet, e-commerce, agents IA et automatisation pour les TPE,
+              PME et artisans du Pays de Gex, de l&apos;Ain et de la région de
+              Genève.
             </p>
 
             <address className={styles.nap}>
@@ -146,8 +137,10 @@ export function Footer() {
           <div className={styles.col}>
             <p className={styles.colTitle}>Zone d’intervention</p>
             <p className={styles.area}>
-              Nous intervenons à {site.serviceArea.slice(0, -2).join(", ")}, dans
-              tout le Pays de Gex et le bassin franco-suisse, jusqu’à Genève.
+              Agence web pour le Pays de Gex — Saint-Genis-Pouilly, Gex,
+              Ferney-Voltaire, Prévessin-Moëns, Thoiry, Cessy, Divonne-les-Bains
+              — et pour tout l’Ain (Bourg-en-Bresse, Oyonnax, Valserhône) ainsi
+              que Genève et la Suisse frontalière.
             </p>
           </div>
         </div>

@@ -201,6 +201,8 @@ export function Header() {
                     <Link
                       href={item.href}
                       className={styles.navLink}
+                      // pages encore à créer (/tarifs, /blog) : pas de prefetch
+                      prefetch={false}
                       aria-current={
                         isActive(pathname, item.href) ? "page" : undefined
                       }
@@ -216,7 +218,7 @@ export function Header() {
           <div className={styles.actions}>
             {/* CTA desktop : se compacte au scroll */}
             <Button
-              href="/contact"
+              href="/#contact"
               size={scrolled ? "sm" : "md"}
               className={styles.ctaDesktop}
             >
@@ -225,7 +227,7 @@ export function Header() {
 
             {/* CTA compact mobile */}
             <Button
-              href="/contact"
+              href="/#contact"
               size="sm"
               className={styles.ctaMobile}
               aria-label="Demander un devis"
@@ -327,7 +329,7 @@ export function Header() {
               ),
             )}
           </ul>
-          <Button href="/contact" size="lg" fullWidth>
+          <Button href="/#contact" size="lg" fullWidth>
             Demander un devis
           </Button>
         </Container>

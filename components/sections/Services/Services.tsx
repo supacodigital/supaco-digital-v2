@@ -78,12 +78,12 @@ export function Services() {
         <header className={styles.head}>
           <p className={styles.eyebrow}>Nos expertises</p>
           <h2 id="services-title" className={styles.title}>
-            Quatre métiers, un seul studio
+            Agence web, IA et automatisation — un seul interlocuteur
           </h2>
           <p className={styles.lede}>
-            Du site vitrine à l&apos;outil métier sur-mesure, nous couvrons
-            toute la chaîne pour les TPE, PME et artisans du bassin
-            franco-suisse.
+            De la création de site internet à l&apos;outil métier sur-mesure,
+            Supaco Digital couvre toute la chaîne pour les TPE, PME et artisans
+            du Pays de Gex, de l&apos;Ain et de la région de Genève.
           </p>
         </header>
 

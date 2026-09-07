@@ -1,0 +1,40 @@
+/* Fil d'Ariane — pages profondes. Sobre, discret, au-dessus du H1. */
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumb a {
+  color: var(--text-secondary);
+  transition: color 160ms var(--ease-out);
+}
+
+.breadcrumb a:hover {
+  color: var(--brand-cyan);
+}
+
+.breadcrumb li[aria-current="page"] {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.breadcrumb span[aria-hidden="true"] {
+  color: var(--border-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumb a {
+    transition: none;
+  }
+}

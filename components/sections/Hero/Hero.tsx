@@ -10,7 +10,6 @@ import { Sparkle } from "@phosphor-icons/react";
 import { Container } from "@/components/ui/Container";
 import { SupacoMark } from "@/components/ui/SupacoMark";
 import { Button } from "@/components/ui/Button";
-import { site } from "@/lib/site";
 import heroImage from "@/public/hero/mont-blanc.webp";
 import styles from "./Hero.module.css";
 
@@ -93,22 +92,25 @@ export function Hero() {
       <Container as="div" className={styles.inner}>
         <p className={`${styles.eyebrow} ${styles.reveal}`}>
           <Sparkle size={15} weight="fill" aria-hidden="true" />
-          {site.tagline}
+          Agence web · Pays de Gex · bassin franco-suisse
         </p>
 
         <h1 id="hero-title" className={`${styles.title} ${styles.reveal}`}>
-          Des sites web et outils IA qui font{" "}
-          <span className={styles.accent}>travailler votre entreprise</span>
+          Agence web dans le Pays de Gex&nbsp;:{" "}
+          <span className={styles.accent}>
+            sites internet, IA &amp; automatisation
+          </span>
         </h1>
 
         <p className={`${styles.lede} ${styles.reveal}`}>
-          Supaco Digital conçoit sites vitrines, e-commerce, agents IA et
-          automatisations pour les TPE, PME et artisans du Pays de Gex, de
-          Saint-Genis-Pouilly à Genève.
+          Supaco Digital crée des sites internet, boutiques en ligne, agents IA
+          et automatisations pour les TPE, PME et artisans du Pays de Gex, de
+          l&apos;Ain et de la région de Genève — de Saint-Genis-Pouilly à
+          Ferney-Voltaire, Gex et Divonne-les-Bains.
         </p>
 
         <div className={`${styles.actions} ${styles.reveal}`}>
-          <Button href="/contact" size="lg">
+          <Button href="/#contact" size="lg">
             Demander un devis
           </Button>
           <Link href="/#portfolio" className={styles.secondary}>

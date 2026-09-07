@@ -69,6 +69,8 @@ export const site = {
   // fourchette de prix (JSON-LD priceRange) — pack Essentiel à Performance
   priceRange: "1 800 € – 4 500 €",
 
+  // Bandeau défilant + phrase "zone d'intervention" du footer : liste courte,
+  // orientée cœur de cible. Les villes exhaustives vivent dans `serviceAreas`.
   serviceArea: [
     "Saint-Genis-Pouilly",
     "Gex",
@@ -80,6 +82,86 @@ export const site = {
     "Genève",
   ],
 } as const;
+
+/**
+ * Zones d'intervention détaillées — SEO local.
+ * Regroupées en trois secteurs : cœur du Pays de Gex, reste de l'Ain (rayon
+ * RCS Bourg-en-Bresse), et Genève / Suisse frontalière. Alimente le JSON-LD
+ * `areaServed`, la page /services et les contenus locaux.
+ */
+export const serviceAreas = {
+  paysDeGex: {
+    label: "Pays de Gex",
+    cities: [
+      "Saint-Genis-Pouilly",
+      "Gex",
+      "Ferney-Voltaire",
+      "Prévessin-Moëns",
+      "Thoiry",
+      "Cessy",
+      "Segny",
+      "Divonne-les-Bains",
+      "Ornex",
+      "Sergy",
+      "Crozet",
+    ],
+  },
+  ain: {
+    label: "Ain",
+    cities: [
+      "Bourg-en-Bresse",
+      "Oyonnax",
+      "Valserhône",
+      "Bellegarde-sur-Valserine",
+      "Nantua",
+      "Gex",
+    ],
+  },
+  geneve: {
+    label: "Genève et Suisse frontalière",
+    cities: [
+      "Genève",
+      "Meyrin",
+      "Grand-Saconnex",
+      "Vernier",
+      "Nyon",
+    ],
+  },
+} as const;
+
+/** Toutes les villes, dédupliquées — pour `areaServed` du JSON-LD. */
+export const allServiceCities: string[] = Array.from(
+  new Set(
+    Object.values(serviceAreas).flatMap((zone) => [...zone.cities]),
+  ),
+);
+
+/**
+ * Mots-clés SEO transverses (agence web, création de site, informatique…).
+ * Repris dans `knowsAbout` du JSON-LD et disponibles pour les contenus.
+ * Google ignore `<meta keywords>` : on ne l'utilise donc pas — ces termes
+ * servent au balisage structuré et à guider la rédaction on-page.
+ */
+export const seoKeywords: string[] = [
+  "agence web Pays de Gex",
+  "agence web Saint-Genis-Pouilly",
+  "création de site internet Gex",
+  "création de site web Ferney-Voltaire",
+  "création site internet Pays de Gex",
+  "agence digitale bassin franco-suisse",
+  "développeur web Pays de Gex",
+  "refonte de site internet",
+  "site web pour artisan",
+  "site vitrine TPE PME",
+  "site e-commerce Ain",
+  "agence web Genève frontalier",
+  "prestataire informatique Pays de Gex",
+  "développement d'applications sur-mesure",
+  "agent IA pour entreprise",
+  "automatisation des tâches",
+  "création site web Bourg-en-Bresse",
+  "webmaster Pays de Gex",
+];
 
 /**
  * Navigation principale — ancres de la page d'accueil + pages dédiées.
@@ -96,7 +178,7 @@ export const mainNav: NavItem[] = [
   { label: "Réalisations", href: "/#portfolio" },
   { label: "Tarifs", href: "/tarifs" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 /**
@@ -191,6 +273,222 @@ export const services = [
 ] as const;
 
 export type Service = (typeof services)[number];
+export type ServiceSlug = Service["slug"];
+
+/**
+ * Contenu long des pages /services/[slug] — rédigé pour le SEO local
+ * (agence web, création de site internet, informatique) sur le bassin
+ * franco-suisse. Indexé par slug ; la forme de `services` (consommée par le
+ * mega-menu et la section d'accueil) reste inchangée.
+ *
+ * `metaTitle` / `metaDescription` : balises uniques de la page (≤ ~60 / ~155
+ * caractères). `intro` : chapô sous le H1. `sections` : blocs h2 + paragraphes.
+ * `deliverables` : liste détaillée. `faq` : questions fréquentes (alimente le
+ * JSON-LD FAQPage — utile pour les rich snippets).
+ */
+export const serviceContent: Record<
+  ServiceSlug,
+  {
+    metaTitle: string;
+    metaDescription: string;
+    h1: string;
+    intro: string;
+    sections: { title: string; body: string[] }[];
+    deliverables: string[];
+    faq: { q: string; a: string }[];
+  }
+> = {
+  "sites-web": {
+    metaTitle: "Création de site internet dans le Pays de Gex",
+    metaDescription:
+      "Agence web à Saint-Genis-Pouilly : création de sites vitrines, e-commerce et sur-mesure pour les TPE, PME et artisans du Pays de Gex, de l'Ain et de la région de Genève.",
+    h1: "Création de site internet dans le Pays de Gex",
+    intro:
+      "Supaco Digital est l'agence web du bassin franco-suisse pour la création et la refonte de sites internet. Site vitrine, boutique en ligne ou plateforme sur-mesure : chaque projet est conçu à la main, optimisé pour le référencement local et pensé pour transformer vos visiteurs en clients.",
+    sections: [
+      {
+        title: "Un site vitrine qui inspire confiance",
+        body: [
+          "Pour un artisan, un commerce ou un cabinet de Gex, Ferney-Voltaire, Divonne-les-Bains ou Saint-Genis-Pouilly, le site internet est souvent le premier contact avec un prospect. Il doit charger vite, être lisible sur mobile et donner immédiatement envie de vous appeler.",
+          "Nous concevons des sites vitrines sur-mesure — pas de template revendu à l'identique — avec un contenu rédigé pour les recherches locales : « plombier à Gex », « avocat Ferney-Voltaire », « restaurant Pays de Gex ».",
+        ],
+      },
+      {
+        title: "Des boutiques en ligne qui vendent",
+        body: [
+          "Vous vendez déjà en magasin ou sur les réseaux : une boutique en ligne vous ouvre la clientèle du Pays de Gex, de l'Ain et de la Suisse voisine, 24 h/24. Catalogue, paiement sécurisé, gestion des stocks et des livraisons transfrontalières.",
+        ],
+      },
+      {
+        title: "Refonte de site : repartir sur des bases saines",
+        body: [
+          "Un site lent, daté ou invisible sur Google pénalise votre activité. Nous reprenons l'existant, conservons ce qui fonctionne côté référencement (redirections, URLs, contenus) et reconstruisons le reste sur une base moderne et rapide.",
+        ],
+      },
+    ],
+    deliverables: [
+      "Design sur-mesure aligné sur votre identité",
+      "Rédaction et structuration du contenu pour le SEO local",
+      "Site rapide et responsive (Core Web Vitals soignés)",
+      "Fiche Google Business Profile mise en cohérence avec le site",
+      "Formation à la prise en main et à la mise à jour",
+      "Hébergement en France et nom de domaine",
+    ],
+    faq: [
+      {
+        q: "Combien coûte un site internet dans le Pays de Gex ?",
+        a: "Nos sites démarrent à 1 800 € pour un site vitrine essentiel. Les packs Croissance (3 000 €) et Performance (4 500 €) ajoutent des fonctionnalités et une maintenance mensuelle. Le détail est sur la page Tarifs.",
+      },
+      {
+        q: "Intervenez-vous en dehors du Pays de Gex ?",
+        a: "Oui. Nous travaillons avec des clients dans tout l'Ain (Bourg-en-Bresse, Oyonnax, Valserhône), ainsi qu'avec des entreprises et indépendants de Genève et de la Suisse frontalière.",
+      },
+      {
+        q: "Reprenez-vous un site existant fait par quelqu'un d'autre ?",
+        a: "Oui, la refonte de site fait partie de nos prestations courantes. Nous auditons l'existant, préservons votre référencement acquis et reconstruisons sur une base saine.",
+      },
+    ],
+  },
+  "agents-ia": {
+    metaTitle: "Agent IA pour entreprise — Pays de Gex & Genève",
+    metaDescription:
+      "Assistants IA et chatbots sur-mesure pour les TPE et PME du Pays de Gex, de l'Ain et de la région de Genève : répondez à vos clients et qualifiez les demandes automatiquement.",
+    h1: "Agents IA pour les entreprises du bassin franco-suisse",
+    intro:
+      "Un agent IA entraîné sur vos contenus répond à vos clients à toute heure, qualifie les demandes et fait gagner un temps précieux à votre équipe. Supaco Digital conçoit et intègre ces assistants pour les entreprises du Pays de Gex et de la région de Genève.",
+    sections: [
+      {
+        title: "Un assistant qui connaît votre activité",
+        body: [
+          "L'agent est entraîné sur vos documents, vos tarifs, vos process et votre FAQ. Il répond avec précision, dans votre ton, et oriente le visiteur vers la bonne page ou le bon interlocuteur.",
+          "Intégré à votre site, à WhatsApp ou à votre messagerie, il prend le relais quand vous n'êtes pas disponible — le soir, le week-end, en déplacement.",
+        ],
+      },
+      {
+        title: "Qualifier les demandes avant qu'elles n'arrivent",
+        body: [
+          "Plutôt qu'un formulaire mort, l'agent pose les bonnes questions, récupère les informations utiles (besoin, zone, budget) et vous transmet des demandes déjà triées.",
+        ],
+      },
+      {
+        title: "Reprise humaine à tout moment",
+        body: [
+          "L'agent ne remplace pas la relation client : il la prépare. Vous gardez la main et reprenez la conversation quand c'est pertinent.",
+        ],
+      },
+    ],
+    deliverables: [
+      "Cadrage des cas d'usage et des limites de l'agent",
+      "Entraînement sur vos contenus et vos procédures",
+      "Intégration au site, à la messagerie ou à WhatsApp",
+      "Garde-fous et scénarios de reprise humaine",
+      "Tableau de bord des conversations",
+      "Suivi et amélioration continue",
+    ],
+    faq: [
+      {
+        q: "Un agent IA est-il utile pour une petite entreprise ?",
+        a: "Oui, surtout quand vous êtes seul ou en petite équipe : l'agent absorbe les questions répétitives et vous ne perdez plus de prospects faute de réponse rapide.",
+      },
+      {
+        q: "Les réponses de l'agent sont-elles fiables ?",
+        a: "L'agent répond à partir de vos contenus validés, avec des garde-fous. Pour les sujets sensibles, il passe la main à un humain plutôt que d'inventer.",
+      },
+    ],
+  },
+  "saas-sur-mesure": {
+    metaTitle: "SaaS & application métier sur-mesure — Pays de Gex",
+    metaDescription:
+      "Développement d'applications métier et de logiciels SaaS sur-mesure pour les entreprises du Pays de Gex, de l'Ain et de la région de Genève, quand aucun outil du marché ne convient.",
+    h1: "SaaS et applications métier sur-mesure",
+    intro:
+      "Quand les logiciels du marché ne collent pas à votre façon de travailler, une application sur-mesure devient rentable. Supaco Digital cadre, développe et héberge des outils métier et des plateformes SaaS pour les entreprises du bassin franco-suisse.",
+    sections: [
+      {
+        title: "Cadrer avant de coder",
+        body: [
+          "Un projet sur-mesure réussit ou échoue au cadrage. Nous partons de vos processus réels, identifions ce qui doit être automatisé et ce qui doit rester manuel, et priorisons une première version utile rapidement.",
+        ],
+      },
+      {
+        title: "Une interface pensée pour vos équipes",
+        body: [
+          "Vos collaborateurs utiliseront l'outil tous les jours : il doit être clair, rapide et sans friction. Nous concevons des interfaces sobres, testées avec les personnes qui s'en serviront.",
+        ],
+      },
+      {
+        title: "Hébergement et maintenance assurés",
+        body: [
+          "Nous hébergeons l'application sur une infrastructure en Europe, assurons les sauvegardes, les mises à jour de sécurité et l'évolution de l'outil au fil de vos besoins.",
+        ],
+      },
+    ],
+    deliverables: [
+      "Atelier de cadrage et spécifications",
+      "Maquettes et validation avant développement",
+      "Développement par itérations, livraisons régulières",
+      "Reprise de vos données existantes",
+      "Hébergement, sauvegardes et supervision",
+      "Maintenance corrective et évolutive",
+    ],
+    faq: [
+      {
+        q: "À partir de quand une application sur-mesure est-elle justifiée ?",
+        a: "Dès que vous jonglez entre plusieurs fichiers Excel, que vous ressaisissez les mêmes données ou que votre logiciel actuel vous oblige à contourner ses limites tous les jours.",
+      },
+      {
+        q: "Combien de temps prend un projet SaaS ?",
+        a: "Une première version utilisable est généralement livrée en quelques semaines à quelques mois selon le périmètre. Nous ne communiquons pas de délai ferme avant le cadrage.",
+      },
+    ],
+  },
+  automatisation: {
+    metaTitle: "Automatisation des tâches — Pays de Gex & Ain",
+    metaDescription:
+      "Automatisation des tâches répétitives et connexion de vos outils (devis, facturation, CRM) pour les TPE et PME du Pays de Gex, de l'Ain et de la région de Genève.",
+    h1: "Automatisation des tâches pour les TPE et PME",
+    intro:
+      "Devis recopiés, relances oubliées, données saisies deux fois : ces tâches vous coûtent des heures chaque semaine. Supaco Digital relie vos outils entre eux et automatise ce qui peut l'être, pour les entreprises du bassin franco-suisse.",
+    sections: [
+      {
+        title: "Vos outils qui se parlent enfin",
+        body: [
+          "Site, formulaire, CRM, facturation, comptabilité, agenda : nous connectons ces briques pour qu'une information saisie une fois se propage partout, sans copier-coller.",
+        ],
+      },
+      {
+        title: "Les relances et alertes qui se déclenchent seules",
+        body: [
+          "Devis sans réponse, facture en retard, nouveau lead : l'automatisation envoie la bonne relance au bon moment et vous alerte uniquement quand une action humaine est nécessaire.",
+        ],
+      },
+      {
+        title: "Commencer petit, étendre ensuite",
+        body: [
+          "On démarre par le flux qui vous fait perdre le plus de temps, on mesure le gain, puis on étend. Pas de refonte de tout votre système d'un coup.",
+        ],
+      },
+    ],
+    deliverables: [
+      "Cartographie de vos flux et points de friction",
+      "Connexion de vos outils (devis, facturation, CRM, agenda)",
+      "Scénarios d'automatisation et de relance",
+      "Alertes ciblées pour votre équipe",
+      "Documentation des automatisations mises en place",
+      "Ajustements après mise en production",
+    ],
+    faq: [
+      {
+        q: "Faut-il changer de logiciels pour automatiser ?",
+        a: "Le plus souvent non : nous connectons les outils que vous utilisez déjà. Nous ne recommandons un changement que si un outil bloque réellement toute automatisation.",
+      },
+      {
+        q: "L'automatisation est-elle réservée aux grandes entreprises ?",
+        a: "Au contraire : une TPE ou un artisan seul gagne proportionnellement plus de temps, car chaque tâche répétitive supprimée pèse lourd sur une petite structure.",
+      },
+    ],
+  },
+};
 
 /**
  * Réalisations clients — aperçu sur l'accueil + base des études de cas.

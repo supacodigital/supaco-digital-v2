@@ -3,7 +3,7 @@ import { Space_Grotesk, Inter } from "next/font/google";
 import { SmoothScroll } from "@/lib/SmoothScroll";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { site } from "@/lib/site";
+import { seoKeywords, serviceAreas, site } from "@/lib/site";
 import "./globals.css";
 
 // Police d'affichage : géométrique, caractère "studio tech"
@@ -58,12 +58,17 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD LocalBusiness + Organization (page d'accueil / présent sur tout le site)
+/**
+ * JSON-LD présent sur toutes les pages : nœud `#organization` (identité +
+ * signal local : NAP, geo, horaires, zones desservies). L'accueil ajoute
+ * par-dessus le `WebSite`, la fiche `#localbusiness` détaillée, le catalogue
+ * d'offres et les nœuds `Service` (cf. `HomeStructuredData`).
+ */
 function StructuredData() {
   const { address, geo } = site.contact;
   const data = {
     "@context": "https://schema.org",
-    "@type": ["Organization", "ProfessionalService"],
+    "@type": ["Organization", "ProfessionalService", "WebDesignCompany"],
     "@id": `${site.url}/#organization`,
     name: site.name,
     url: site.url,
@@ -75,6 +80,7 @@ function StructuredData() {
     description: site.description,
     slogan: site.tagline,
     priceRange: site.priceRange,
+    currenciesAccepted: "EUR, CHF",
     address: {
       "@type": "PostalAddress",
       addressLocality: address.locality,
@@ -87,7 +93,10 @@ function StructuredData() {
       latitude: geo.latitude,
       longitude: geo.longitude,
     },
-    areaServed: site.serviceArea.map((name) => ({ "@type": "Place", name })),
+    areaServed: Object.values(serviceAreas).map((zone) => ({
+      "@type": "AdministrativeArea",
+      name: zone.label,
+    })),
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -96,13 +105,7 @@ function StructuredData() {
     },
     sameAs: site.social.map((s) => s.href),
     identifier: site.legal.siret,
-    knowsAbout: [
-      "Création de sites web",
-      "E-commerce",
-      "Agents conversationnels IA",
-      "Développement SaaS",
-      "Automatisation des processus métier",
-    ],
+    knowsAbout: seoKeywords,
   };
 
   return (

@@ -1,0 +1,254 @@
+/* Page /services/[slug] — contenu long, thème sombre global. */
+.wrap {
+  padding-top: clamp(1.5rem, 5vw, 3rem);
+  padding-bottom: var(--space-section);
+}
+
+.article {
+  max-width: 46rem;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* --- En-tête --- */
+.eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--brand-gradient-bright);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.title {
+  margin-top: 0.85rem;
+  font-size: clamp(2rem, 4.5vw, 2.9rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.intro {
+  margin-top: 1.15rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.headActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.secondaryLink {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-strong);
+  padding-bottom: 2px;
+  transition: border-color 160ms var(--ease-out);
+}
+
+.secondaryLink:hover {
+  border-color: var(--brand-cyan);
+}
+
+/* --- Sections de contenu --- */
+.sections {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 4vw, 2.75rem);
+}
+
+.sectionTitle {
+  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.sectionBody {
+  margin-top: 0.9rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.sectionBody + .sectionBody {
+  margin-top: 0.7rem;
+}
+
+/* --- Livrables --- */
+.deliverables {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+.deliverablesList {
+  margin-top: 1.1rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.deliverablesList li {
+  position: relative;
+  padding-left: 1.75rem;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.deliverablesList li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-cyan);
+}
+
+/* --- FAQ --- */
+.faq {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+.faqList {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.faqItem dt {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.faqItem dd {
+  margin-top: 0.45rem;
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* --- Zone d'intervention --- */
+.areas {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+.areasLede {
+  margin-top: 0.9rem;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.areasGrid {
+  margin-top: 1.25rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .areasGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.areaZone {
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-soft);
+}
+
+.areaZoneName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.areaZoneCities {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* --- Autres services --- */
+.related {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+.relatedList {
+  margin-top: 1rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.relatedList a {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 1px solid transparent;
+  transition: color 160ms var(--ease-out);
+}
+
+.relatedList a:hover {
+  color: var(--brand-cyan);
+}
+
+/* --- CTA --- */
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: clamp(3rem, 7vw, 4.5rem);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  border-radius: var(--radius-lg);
+  background: var(--brand-gradient-soft);
+  border: 1px solid var(--border-soft);
+}
+
+.ctaKicker {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-cyan);
+}
+
+.ctaTitle {
+  margin-top: 0.35rem;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  max-width: 28ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .secondaryLink,
+  .relatedList a {
+    transition: none;
+  }
+}
