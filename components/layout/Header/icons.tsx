@@ -19,7 +19,7 @@ const base = {
 export function MenuIcon({ size = 22, className }: IconProps) {
   return (
     <svg width={size} height={size} className={className} {...base}>
-      <path d="M4 7h16M4 12h16M4 17h16" />
+      <path d="M4 9h16M4 15h16" />
     </svg>
   );
 }

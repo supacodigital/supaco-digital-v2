@@ -40,6 +40,30 @@
   z-index: 0;
 }
 
+/* second filigrane, gauche — centré à peu près sur la bande du titre, donc plus
+   bas que celui de droite (ancré en haut de section). légère rotation à gauche,
+   contrepoint du premier. */
+.watermarkAlt {
+  position: absolute;
+  top: clamp(3rem, 8vw, 6rem);
+  left: clamp(-1.5rem, 1vw, 1rem);
+  width: clamp(150px, 17vw, 260px);
+  height: auto;
+  color: var(--s-ink);
+  opacity: 0.035;
+  rotate: -6deg;
+  transform-origin: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* écrans étroits : un seul filigrane suffit, le second surcharge */
+@media (max-width: 640px) {
+  .watermarkAlt {
+    display: none;
+  }
+}
+
 .inner {
   /* plus large que le container standard (1200px) : 4 cartes qui respirent */
   width: 100%;
@@ -115,10 +139,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  /* hauteur plancher commune : les 4 cartes sont identiques quelle que soit
-     la disposition (1, 2 ou 4 colonnes), pas seulement par rangée grid.
-     ~ padding (2×2.2rem) + icône 54 + titre + blurb 3l + livrables + CTA */
-  min-height: 460px;
+  /* plancher de sécurité : en 4 colonnes, c'est le contenu de « Sites web »
+     (5 livrables) qui fixe la hauteur réelle et les 3 autres cartes s'y
+     étirent (align-items: stretch). le plancher couvre les dispositions
+     1 / 2 colonnes où « Sites web » n'est plus la référence de rangée. */
+  min-height: 520px;
   padding: clamp(1.9rem, 2.2vw, 2.4rem) clamp(1.6rem, 1.9vw, 2rem)
     clamp(1.65rem, 2vw, 2rem);
   border-radius: var(--radius-lg);
@@ -236,6 +261,7 @@
   color: var(--s-ink);
 }
 
+
 .cardText {
   margin-top: 0.65rem;
   font-size: 0.92rem;
@@ -281,9 +307,12 @@
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-/* --- Pied : CTA identitaire seul --- */
+/* --- Pied : CTA identitaire (devis) + lien secondaire (voir plus) --- */
 .foot {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
   /* pousse le pied en bas ; combiné aux hauteurs réservées ci-dessus, les
      CTA des 4 cartes tombent sur la même ligne */
   margin-top: auto;
@@ -294,6 +323,44 @@
 /* CTA : reprend le Button identitaire (parallélogramme 8°, dégradé signature). */
 .cta {
   width: 100%;
+}
+
+/* lien secondaire : discret, sous le bouton devis, vers /services/[slug] */
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--s-ink-soft);
+  transition: color 160ms var(--ease-out);
+}
+
+.moreIcon {
+  transition: transform 160ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .more:hover {
+    color: var(--brand-blue);
+  }
+
+  .more:hover .moreIcon {
+    transform: translateX(3px);
+  }
+}
+
+.more:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .more,
+  .moreIcon {
+    transition: none;
+  }
 }
 
 /* --- Réduction de mouvement --- */

@@ -23,7 +23,8 @@ Site vitrine qui doit :
 1. Présenter l'agence et ses services de façon crédible et premium (le site est
    lui-même une démonstration du savoir-faire).
 2. Convertir des prospects TPE/PME/artisans en demandes de devis/contact.
-3. Présenter clairement les 3 offres "site web" avec leurs tarifs.
+3. Présenter clairement les services "site web" et amener au devis (cf. §4 —
+   tarification sur devis, pas de grille de prix).
 4. Mettre en avant le portfolio client comme preuve sociale.
 
 **Ne pas** : promettre de délai de livraison (ex. "livré en 72h") — interdit dans
@@ -38,16 +39,21 @@ Quatre piliers de service :
 - **SaaS sur-mesure**
 - **Automatisation** (flux métier, intégrations)
 
-## 4. Offres "Sites web" (grille tarifaire à afficher)
+## 4. Tarification (décision : tout sur devis)
 
-| Pack            | Prix à la commande | Abonnement mensuel                                                  |
-| --------------- | ------------------ | ------------------------------------------------------------------- |
-| **Essentiel**   | 1 800 €            | Aucun (hébergement + nom de domaine 20 €/mois à partir du 13ᵉ mois) |
-| **Croissance**  | 3 000 €            | 150 €/mois (maintenance incluse)                                    |
-| **Performance** | 4 500 €            | 250 €/mois (maintenance incluse)                                    |
+**Aucun prix fixe affiché sur le site.** Chaque projet est chiffré sur devis
+selon le périmètre (nombre de pages, fonctionnalités, e-commerce ou non, reprise
+de contenus). Le site pousse vers le formulaire de contact pour obtenir une
+proposition.
 
-Positionner clairement la différence de valeur entre les 3 paliers (à détailler
-avec Supa si le contenu exact des livrables par pack n'est pas encore rédigé).
+- **Maintenance mensuelle** (quand elle s'applique) : **150 € ou 250 €/mois**
+  selon le projet. Elle **inclut le nom de domaine et l'hébergement**, les mises
+  à jour de sécurité, les sauvegardes, le support et les petites évolutions.
+- JSON-LD `priceRange` : `"€€"` (gamme modérée, pas de fourchette chiffrée).
+- ⚠️ Ne jamais réintroduire de grille de prix fixes (Essentiel/Croissance/
+  Performance à 1 800 / 3 000 / 4 500 €) — abandonnée.
+- Une page `/tarifs` est prévue dans l'arborescence : elle expliquera la
+  démarche devis + ce qui est inclus, sans chiffres à la commande.
 
 ## 5. Portfolio / preuve sociale
 
@@ -185,7 +191,8 @@ Deux variantes du logo existent, à ne pas confondre :
 
 ## 13. Notes ouvertes / à clarifier avec Supa avant de démarrer
 
-- Contenu exact des livrables par pack (Essentiel / Croissance / Performance)
+- Contenu de la future page `/tarifs` (démarche devis + ce qui est inclus,
+  sans prix à la commande — cf. §4)
 - Arborescence définitive des pages (accueil scroll unique + pages séparées
   pour blog/études de cas/tarifs ?)
 - Visuels/captures et résultats chiffrés du portfolio client à intégrer
@@ -197,10 +204,12 @@ Deux variantes du logo existent, à ne pas confondre :
 
 - **Gestionnaire de paquets** : pnpm
 - **Versions** : Next.js 16 (App Router) + React 19 + TypeScript 5
-- **Arborescence retenue** : accueil en scroll unique (hero, services, offres,
-  portfolio aperçu, contact) + pages dédiées `/services/[slug]`, `/tarifs`,
+- **Arborescence retenue** : accueil en scroll unique (hero, bandeau zone, services,
+  réalisations, FAQ, contact) + pages dédiées `/services/[slug]`, `/tarifs`,
   `/portfolio` + `/portfolio/[client]`, `/blog` + `/blog/[slug]`, `/contact`,
   `/mentions-legales`
+- **Tarification** : tout sur devis, pas de grille de prix (cf. §4). Maintenance
+  150/250 €/mois selon projet, nom de domaine + hébergement inclus.
 - **Assets sources** : dans `assets-source/` (hors build). Assets publics
   optimisés à placer dans `public/`
 - ⚠️ Next.js 16 a des breaking changes — consulter `node_modules/next/dist/docs/`
@@ -241,6 +250,18 @@ Deux variantes du logo existent, à ne pas confondre :
   L'accent du titre utilise `--brand-gradient-bright` (cyan clair → bleu moyen,
   lisible sur photo) — le vrai `--brand-gradient` reste réservé logo + boutons.
   Pas de quadrillage (retiré). Ghost mark : `SupacoMark variant="mono"` très discret.
+- `components/sections/Faq` — section **claire** (palette locale `--s-*` comme
+  Services / Réalisations), entre `Realisations` et `Contact` sur l'accueil.
+  Accordéon `<dl>` sémantique : un seul panneau ouvert (`useState`, premier ouvert
+  par défaut), `aria-expanded` / `aria-controls`, `<dd role="region">`. L'ouverture
+  anime `grid-template-rows: 0fr → 1fr` (hauteur fluide sans mesure JS), icône `+`
+  qui pivote à `135deg`. Contenu dans `homeFaq` (`lib/site.ts`) → alimente aussi
+  le JSON-LD `FAQPage` de `HomeStructuredData`. Révélation GSAP stagger au scroll.
+- `components/sections/Services` — cartes : le **titre** est un `<Link>` vers
+  `/services/[slug]` (maillage interne SEO), le **CTA du pied** (`Button`) va
+  droit au `/#contact`. Hauteur des 4 cartes égalisée par « Sites web » (5
+  livrables vs 4) + `align-items: stretch`. Deux filigranes `SupacoMark mono`
+  (haut-droite + gauche à hauteur du titre, rotations opposées).
 - `lib/SmoothScroll` — Lenis + GSAP ticker, respecte `prefers-reduced-motion`.
 
 ### Accessibilité / SEO — acquis

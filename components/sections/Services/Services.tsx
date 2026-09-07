@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
+  ArrowRight,
   Browser,
   ChatCircleDots,
   Check,
@@ -67,10 +69,16 @@ export function Services() {
       ref={root}
       aria-labelledby="services-title"
     >
-      {/* filigrane de marque, décoratif : icône mono en très faible opacité */}
+      {/* filigranes de marque, décoratifs : icône mono en très faible opacité.
+          un en haut à droite, un second plus bas à gauche pour équilibrer. */}
       <SupacoMark
         variant="mono"
         className={styles.watermark}
+        aria-hidden="true"
+      />
+      <SupacoMark
+        variant="mono"
+        className={styles.watermarkAlt}
         aria-hidden="true"
       />
 
@@ -125,16 +133,31 @@ export function Services() {
                 </ul>
 
                 <div className={styles.foot}>
-                  {/* CTA identitaire (même Button que le header) */}
+                  {/* CTA identitaire (même Button que le header) : direct vers
+                      le formulaire de contact. */}
                   <Button
-                    href={`/services/${service.slug}`}
+                    href="/#contact"
                     size="sm"
                     fullWidth
                     className={styles.cta}
-                    aria-label={`${service.title} — en savoir plus`}
+                    aria-label={`${service.title} — demander un devis`}
                   >
-                    En savoir plus
+                    Demander un devis
                   </Button>
+                  {/* lien secondaire discret vers la page détaillée du service */}
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className={styles.more}
+                    aria-label={`${service.title} — voir plus`}
+                  >
+                    Voir plus
+                    <ArrowRight
+                      size={14}
+                      weight="bold"
+                      aria-hidden="true"
+                      className={styles.moreIcon}
+                    />
+                  </Link>
                 </div>
               </li>
             );

@@ -1,5 +1,6 @@
 import {
   allServiceCities,
+  homeFaq,
   seoKeywords,
   serviceAreas,
   services,
@@ -111,6 +112,15 @@ export function HomeStructuredData() {
         name: zone.label,
       })),
     })),
+    {
+      "@type": "FAQPage",
+      "@id": `${site.url}/#faq`,
+      mainEntity: homeFaq.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: item.a },
+      })),
+    },
   ];
 
   const data = {

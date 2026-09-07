@@ -66,8 +66,9 @@ export const site = {
     vatNote: "TVA non applicable, art. 293 B du CGI",
   },
 
-  // fourchette de prix (JSON-LD priceRange) — pack Essentiel à Performance
-  priceRange: "1 800 € – 4 500 €",
+  // indication de gamme de prix (JSON-LD priceRange) — chaque projet est chiffré
+  // sur devis, on ne communique pas de tarif fixe ; « €€ » = gamme modérée
+  priceRange: "€€",
 
   // Bandeau défilant + phrase "zone d'intervention" du footer : liste courte,
   // orientée cœur de cible. Les villes exhaustives vivent dans `serviceAreas`.
@@ -200,6 +201,8 @@ export const services = [
     features: [
       "Design sur-mesure, pas de template",
       "SEO local intégré dès la conception",
+      "Site rapide et responsive (Core Web Vitals)",
+      "Nom de domaine et hébergement en France",
       "Formation à la prise en main",
     ],
     bg: {
@@ -220,6 +223,7 @@ export const services = [
     features: [
       "Entraîné sur vos contenus et vos process",
       "Intégré à votre site ou vos messageries",
+      "Qualifie et trie les demandes entrantes",
       "Reprise humaine à tout moment",
     ],
     bg: {
@@ -240,6 +244,7 @@ export const services = [
     features: [
       "Cadrage des besoins avant la première ligne",
       "Interface pensée pour vos équipes",
+      "Développement par itérations, livraisons régulières",
       "Hébergement et maintenance assurés",
     ],
     bg: {
@@ -261,6 +266,7 @@ export const services = [
       "Devis, facturation et CRM connectés",
       "Zéro double saisie entre vos outils",
       "Alertes et relances déclenchées seules",
+      "Documentation des automatisations mises en place",
     ],
     bg: {
       from: "#0a1226",
@@ -337,7 +343,7 @@ export const serviceContent: Record<
     faq: [
       {
         q: "Combien coûte un site internet dans le Pays de Gex ?",
-        a: "Nos sites démarrent à 1 800 € pour un site vitrine essentiel. Les packs Croissance (3 000 €) et Performance (4 500 €) ajoutent des fonctionnalités et une maintenance mensuelle. Le détail est sur la page Tarifs.",
+        a: "Chaque site est chiffré sur devis, selon le nombre de pages, les fonctionnalités, la présence ou non d'une boutique en ligne et la reprise de contenus existants. Vous nous décrivez votre projet, nous revenons avec une proposition claire et un devis détaillé, sans engagement. La maintenance mensuelle, quand elle s'applique, est de 150 € ou 250 € par mois selon le projet et inclut le nom de domaine et l'hébergement.",
       },
       {
         q: "Intervenez-vous en dehors du Pays de Gex ?",
@@ -438,7 +444,7 @@ export const serviceContent: Record<
       },
       {
         q: "Combien de temps prend un projet SaaS ?",
-        a: "Une première version utilisable est généralement livrée en quelques semaines à quelques mois selon le périmètre. Nous ne communiquons pas de délai ferme avant le cadrage.",
+        a: "Cela dépend entièrement du périmètre fonctionnel et de la disponibilité de vos équipes pour les retours. Nous procédons par itérations avec des livraisons régulières, et nous fixons ensemble un rétroplanning réaliste à l'issue du cadrage plutôt qu'un délai annoncé à l'aveugle.",
       },
     ],
   },
@@ -489,6 +495,48 @@ export const serviceContent: Record<
     ],
   },
 };
+
+/**
+ * FAQ de la page d'accueil — questions récurrentes des prospects TPE/PME/artisans
+ * avant une demande de devis. Rédigée pour le SEO (alimente le JSON-LD `FAQPage`)
+ * et affichée en accordéon entre les sections « Réalisations » et « Contact ».
+ *
+ * ⚠️ Ne jamais promettre de délai de livraison ferme (règle Supaco).
+ */
+export const homeFaq: { q: string; a: string }[] = [
+  {
+    q: "Combien coûte un site internet chez Supaco Digital ?",
+    a: "Chaque projet est chiffré sur devis, en fonction de vos besoins réels : nombre de pages, fonctionnalités, e-commerce ou non, reprise de contenus. Vous décrivez votre projet, nous revenons vers vous avec une proposition claire et un devis détaillé, sans engagement.",
+  },
+  {
+    q: "En combien de temps mon site sera-t-il en ligne ?",
+    a: "Cela dépend du périmètre, du nombre de pages et de la rapidité des allers-retours sur les contenus et les visuels. Nous fixons ensemble un rétroplanning réaliste au démarrage, plutôt qu'un délai annoncé à l'aveugle.",
+  },
+  {
+    q: "Intervenez-vous en dehors du Pays de Gex ?",
+    a: "Oui. Basés à Saint-Genis-Pouilly, nous travaillons avec des clients dans tout le Pays de Gex (Gex, Ferney-Voltaire, Divonne-les-Bains…), le reste de l'Ain, ainsi qu'avec des entreprises et indépendants de Genève et de la Suisse frontalière. La majorité des échanges se fait à distance, avec des rendez-vous sur place quand c'est utile.",
+  },
+  {
+    q: "Le site m'appartient-il vraiment ?",
+    a: "Oui, sans réserve. Le nom de domaine est déposé à votre nom, le code et les contenus vous appartiennent. Vous n'êtes lié à aucun outil propriétaire : si un jour vous souhaitez partir, tout est récupérable.",
+  },
+  {
+    q: "Que comprend la maintenance mensuelle ?",
+    a: "Selon le projet, la maintenance est de 150 € ou 250 € par mois. Elle inclut le nom de domaine et l'hébergement, les mises à jour de sécurité, les sauvegardes, le support et les petites évolutions courantes du site. Vous n'avez aucun frais technique à gérer de votre côté.",
+  },
+  {
+    q: "Est-ce que mon site sera visible sur Google ?",
+    a: "Le référencement local est intégré dès la conception : structure technique propre, contenus rédigés pour les recherches de votre zone, données structurées et mise en cohérence avec votre fiche Google Business Profile. Aucun prestataire sérieux ne garantit une position, mais tout est mis en place pour que vous soyez trouvé.",
+  },
+  {
+    q: "Je repars de zéro ou vous reprenez mon site actuel ?",
+    a: "Les deux sont possibles. La refonte fait partie de nos prestations courantes : nous auditons l'existant, conservons ce qui fonctionne côté référencement (URLs, redirections, contenus) et reconstruisons le reste sur une base moderne et rapide.",
+  },
+  {
+    q: "Proposez-vous autre chose que des sites web ?",
+    a: "Oui : agents IA (assistants qui répondent à vos clients et qualifient les demandes), applications métier sur-mesure et automatisation de vos tâches répétitives. Un seul interlocuteur pour toute la chaîne. Chaque service a sa page dédiée.",
+  },
+];
 
 /**
  * Réalisations clients — aperçu sur l'accueil + base des études de cas.

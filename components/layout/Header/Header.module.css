@@ -150,23 +150,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* pas de fond ni de bordure : simple icône cliquable. on garde une zone de
+     clic large (~42px) via le padding, le SVG reste à 22px. */
   width: 42px;
   height: 42px;
-  border-radius: var(--radius-sm);
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--text-primary);
-  border: 1px solid var(--border-hairline);
-  background-color: rgba(255, 255, 255, 0.04);
-  transition:
-    background-color 140ms var(--ease-out),
-    transform 140ms var(--ease-out);
-}
-
-.menuToggle:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  transition: transform 140ms var(--ease-out);
 }
 
 .menuToggle:active {
-  transform: scale(0.94);
+  transform: scale(0.9);
 }
 
 /* --- Mega-menu desktop (plein largeur) --- */
