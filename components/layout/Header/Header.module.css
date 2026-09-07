@@ -1,0 +1,382 @@
+/*
+ * Header superposé : `fixed`, hors flux — le hero passe dessous.
+ * - en haut de page : transparent
+ * - au scroll : fond bleu nuit opaque + texte blanc
+ */
+.header {
+  /* bleu nuit du header dense (scroll) et du menu mobile ouvert */
+  --header-bg: #080912;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  transition:
+    background-color 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+}
+
+/* état dense après un léger scroll : bleu nuit plein */
+.header[data-scrolled] {
+  background-color: var(--header-bg);
+  border-bottom-color: var(--border-soft);
+  box-shadow: 0 10px 34px -14px rgba(0, 0, 0, 0.6);
+}
+
+/* menu mobile ouvert : on force le fond plein même en haut de page */
+.header[data-open] {
+  background-color: var(--header-bg);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: var(--header-h);
+}
+
+/* desktop : logo à gauche, nav + CTA collés à droite */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* --- Navigation desktop --- */
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  list-style: none;
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* en haut de page : légèrement estompé sur le hero */
+  color: rgba(244, 247, 255, 0.72);
+  transition:
+    color 140ms var(--ease-out),
+    background-color 140ms var(--ease-out);
+}
+
+/* au scroll : texte blanc franc */
+.header[data-scrolled] .navLink,
+.header[data-open] .navLink {
+  color: rgba(244, 247, 255, 0.82);
+}
+
+.navLink:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.navLink:active {
+  transform: scale(0.97);
+}
+
+/* page courante */
+.navLink[aria-current="page"] {
+  color: var(--text-primary);
+}
+
+.navLink[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand-gradient);
+}
+
+/* --- Entrée nav avec mega-menu --- */
+.navItemMega {
+  position: relative;
+}
+
+.navItemMega .navLink {
+  gap: 0.3rem;
+}
+
+.caret {
+  transition: transform 180ms var(--ease-out);
+}
+
+/* rotation du chevron quand le mega-menu est ouvert */
+.header[data-mega] .navItemMega .caret {
+  transform: rotate(180deg);
+}
+
+.header[data-mega] .navItemMega .navLink {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- Actions (CTA + burger) --- */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* CTA parallélogramme — visibilité selon breakpoint (styles du bouton dans Button.module.css) */
+.ctaDesktop {
+  display: none;
+}
+
+.ctaMobile {
+  display: inline-flex;
+}
+
+.menuToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  background-color: rgba(255, 255, 255, 0.04);
+  transition:
+    background-color 140ms var(--ease-out),
+    transform 140ms var(--ease-out);
+}
+
+.menuToggle:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.menuToggle:active {
+  transform: scale(0.94);
+}
+
+/* --- Mega-menu desktop (plein largeur) --- */
+.megaWrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  transform-origin: top center;
+  animation: megaIn 220ms var(--ease-out);
+}
+
+/* le panneau reste au-dessus du voile */
+.megaWrap > :first-child {
+  position: relative;
+  z-index: 2;
+}
+
+/* voile derrière le panneau — commence sous la barre du header, clic = fermer */
+.megaScrim {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(4, 6, 12, 0.55);
+  cursor: default;
+  animation: scrimIn 220ms var(--ease-out);
+}
+
+@keyframes scrimIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes megaIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 899px) {
+  .megaWrap {
+    display: none;
+  }
+}
+
+/* --- Menu mobile plein écran --- */
+.mobileMenu {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  z-index: 99;
+  /* fond opaque : le contenu de la page ne doit pas transparaître */
+  background-color: #080b14;
+  background-image: linear-gradient(
+    180deg,
+    #0c1120 0%,
+    var(--bg-900) 100%
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* entrée : ease-out, court */
+  animation: menuIn 260ms var(--ease-out);
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileInner {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+}
+
+.mobileList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.mobileList li {
+  border-bottom: 1px solid var(--border-hairline);
+  /* stagger léger à l'ouverture */
+  opacity: 0;
+  transform: translateY(8px);
+  animation: itemIn 320ms var(--ease-out) forwards;
+  animation-delay: calc(60ms + var(--i) * 45ms);
+}
+
+@keyframes itemIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileLink,
+.mobileLinkToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.1rem 0.25rem;
+  font-family: inherit;
+  font-size: 1.35rem;
+  font-weight: 500;
+  text-align: left;
+  color: var(--text-primary);
+  transition: color 140ms var(--ease-out);
+}
+
+.mobileLink:active,
+.mobileLinkToggle:active {
+  color: var(--brand-cyan);
+}
+
+.mobileCaret {
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease-out);
+}
+
+/* rotation pilotée par l'état du bouton (aria-expanded), pas par une prop d'icône */
+.mobileLinkToggle[aria-expanded="true"] .mobileCaret {
+  transform: rotate(180deg);
+}
+
+/* sous-liste services (mobile) */
+.mobileSubList {
+  list-style: none;
+  padding: 0 0 0.75rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileSubList li {
+  border-bottom: none;
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+.mobileSubLink {
+  display: block;
+  padding: 0.7rem 0;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  transition: color 140ms var(--ease-out);
+}
+
+.mobileSubLink:active {
+  color: var(--brand-cyan);
+}
+
+/* --- Desktop --- */
+@media (min-width: 900px) {
+  .nav {
+    display: block;
+  }
+  .ctaDesktop {
+    display: inline-flex;
+  }
+  .ctaMobile {
+    display: none;
+  }
+  .menuToggle {
+    display: none;
+  }
+  .mobileMenu {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    transition: none;
+  }
+  .mobileMenu,
+  .mobileList li,
+  .megaWrap,
+  .megaScrim {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .caret,
+  .mobileCaret,
+  .navLink,
+  .menuToggle {
+    transition: none;
+  }
+}

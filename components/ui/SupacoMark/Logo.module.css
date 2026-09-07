@@ -1,0 +1,17 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  /* clear space : respiration garantie autour du logo */
+  padding: 0.25rem;
+  transition: opacity 160ms var(--ease-out);
+}
+
+.logo:hover {
+  opacity: 0.82;
+}
+
+.img {
+  display: block;
+  height: auto;
+  width: auto;
+}

@@ -1,0 +1,37 @@
+{
+  "name": "supaco-digital",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@phosphor-icons/react": "^2.1.10",
+    "framer-motion": "^13.2.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.4",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "//browserslist": "Cible moderne : sans ça, Lightning CSS (Turbopack) supprime les propriétés standard au profit des seuls préfixes -webkit- (ex. backdrop-filter), cassées sur Chrome/Firefox récents.",
+  "browserslist": [
+    "chrome >= 111",
+    "firefox >= 113",
+    "safari >= 16.4",
+    "edge >= 111"
+  ]
+}

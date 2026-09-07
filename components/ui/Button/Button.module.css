@@ -1,0 +1,161 @@
+/*
+ * Bouton identitaire Supaco — parallélogramme incliné ~8° vers l'avant.
+ * La silhouette vient d'un `clip-path` sur une couche de fond (::before) ;
+ * l'ombre colorée est portée par `filter: drop-shadow()` sur le bouton
+ * (drop-shadow suit le clip-path, contrairement à box-shadow).
+ */
+
+.button {
+  --skew: 9px;
+  --shape: polygon(
+    var(--skew) 0,
+    100% 0,
+    calc(100% - var(--skew)) 100%,
+    0 100%
+  );
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  transition:
+    transform 160ms var(--ease-out),
+    filter 200ms var(--ease-out),
+    letter-spacing 200ms var(--ease-out),
+    padding 200ms var(--ease-out);
+}
+
+/* couche de fond : c'est elle qui porte la forme et la couleur */
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: var(--shape);
+  transition:
+    background-color 160ms var(--ease-out),
+    filter 160ms var(--ease-out);
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+/* le clip rogne un peu à gauche/droite : on recentre optiquement le texte */
+.label {
+  display: inline-block;
+  padding-inline: 2px;
+}
+
+/* --- Tailles ---
+ * `--skew` ≈ hauteur × tan(8°) ≈ hauteur × 0.14 → angle constant
+ */
+.sm {
+  --skew: 7px;
+  padding: 8px 20px;
+  min-height: 34px;
+  font-size: 0.7rem;
+}
+
+.md {
+  --skew: 9px;
+  padding: 11px 26px;
+  min-height: 40px;
+  font-size: 0.78rem;
+}
+
+.lg {
+  --skew: 12px;
+  padding: 15px 38px;
+  min-height: 52px;
+  font-size: 0.92rem;
+}
+
+/* --- Casse capitales espacées (forme validée) --- */
+.uppercase .label {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  /* le letter-spacing ajoute de l'espace après la dernière lettre : on compense */
+  margin-right: -0.18em;
+  padding-left: calc(2px + 0.09em);
+}
+
+/* --- Pleine largeur (menu mobile) --- */
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+/* --- Variante primary : dégradé signature plein --- */
+.primary {
+  filter: drop-shadow(0 12px 22px rgba(37, 99, 235, 0.42));
+}
+
+.primary::before {
+  background: var(--brand-gradient);
+}
+
+.primary:hover {
+  filter: drop-shadow(0 16px 30px rgba(37, 99, 235, 0.58)) brightness(1.05);
+}
+
+/* --- Variante glass : corps verre + arête gauche dégradée --- */
+.glass {
+  color: var(--text-primary);
+}
+
+.glass::before {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* petite lame de couleur sur le bord gauche incliné */
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: polygon(
+    var(--skew) 0,
+    calc(var(--skew) + 6px) 0,
+    6px 100%,
+    0 100%
+  );
+  background: var(--brand-gradient);
+}
+
+.glass:hover {
+  color: #fff;
+  filter: drop-shadow(0 14px 30px rgba(37, 99, 235, 0.4));
+}
+
+.glass:hover::before {
+  background: rgba(53, 167, 240, 0.12);
+}
+
+/* --- Variante ghost : contour seul --- */
+.ghost {
+  color: var(--text-primary);
+}
+
+.ghost::before {
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px var(--border-soft);
+}
+
+.ghost:hover::before {
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition-property: filter, letter-spacing, padding;
+  }
+}

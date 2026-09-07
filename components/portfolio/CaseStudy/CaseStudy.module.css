@@ -1,0 +1,189 @@
+/*
+ * Étude de cas — page dédiée /portfolio/[slug].
+ * Section claire (blanc cassé, texte bleu nuit) : même parti pris que
+ * Réalisations et Services, pour la continuité visuelle avec l'accueil.
+ */
+.root {
+  --c-bg: #ffffff;
+  --c-ink: #011a42;
+  --c-ink-soft: #3a4a6b;
+  --c-ink-muted: #64738f;
+  --c-border: #e6ebf5;
+  --c-border-strong: #d5deec;
+
+  color: var(--c-ink-soft);
+}
+
+/* --- Capture --- */
+.shot {
+  position: relative;
+  aspect-ratio: 16 / 8.5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, #e8edf6 0%, #dde5f1 100%);
+  border: 1px solid var(--c-border);
+}
+
+.shotImg {
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* --- Corps : largeur de lecture confortable --- */
+.body {
+  margin-top: clamp(1.5rem, 4vw, 2.25rem);
+  max-width: 68ch;
+}
+
+.head {
+  padding-bottom: clamp(1.5rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--c-border);
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-blue);
+}
+
+.title {
+  margin-top: 0.6rem;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+}
+
+.summary {
+  margin-top: 0.85rem;
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--c-ink-soft);
+}
+
+/* --- Fiche d'infos --- */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+}
+
+.fact dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+.fact dd {
+  margin-top: 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+/* --- Sections narratives --- */
+.sections {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.25rem);
+  margin-top: clamp(1.75rem, 4vw, 2.25rem);
+  max-width: 60ch;
+}
+
+.section p {
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--c-ink-soft);
+}
+
+.sectionTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+}
+
+.deliverables {
+  list-style: none;
+  margin-top: 0.6rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.deliverables li {
+  position: relative;
+  padding-left: 1.4rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--c-ink-soft);
+}
+
+.deliverables li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand-blue);
+}
+
+/* --- Résultat --- */
+.outcome {
+  margin-top: clamp(1.75rem, 4vw, 2.25rem);
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border-radius: var(--radius-md);
+  background: #f4f7fc;
+  border: 1px solid var(--c-border);
+}
+
+.outcomeLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-blue);
+}
+
+.outcomeText {
+  margin-top: 0.5rem;
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+/* --- Actions --- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: clamp(1.75rem, 4vw, 2.25rem);
+}
+
+.externalHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--c-ink-muted);
+  transition: color 160ms var(--ease-out);
+}
+
+.externalHint:hover {
+  color: var(--brand-blue);
+}

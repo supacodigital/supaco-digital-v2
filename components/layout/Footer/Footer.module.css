@@ -1,0 +1,220 @@
+.footer {
+  position: relative;
+  margin-top: var(--space-section);
+  padding-block: clamp(2.5rem, 6vw, 4rem) 2rem;
+  border-top: 1px solid var(--border-hairline);
+  background: linear-gradient(
+    180deg,
+    rgba(11, 16, 32, 0) 0%,
+    rgba(8, 11, 20, 0.8) 100%
+  );
+}
+
+/* --- Rappel de conversion --- */
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      50rem 20rem at 0% 0%,
+      rgba(53, 167, 240, 0.12),
+      transparent 60%
+    ),
+    var(--bg-glass);
+}
+
+.ctaKicker {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-cyan);
+}
+
+.ctaTitle {
+  margin-top: 0.35rem;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* --- Grille principale --- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.75rem;
+}
+
+.brand {
+  max-width: 38ch;
+}
+
+.pitch {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.nap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  font-style: normal;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.nap span,
+.nap a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition: color 140ms var(--ease-out);
+}
+
+.nap a:hover {
+  color: var(--text-primary);
+}
+
+.nap svg,
+.hours svg {
+  color: var(--brand-cyan);
+  flex-shrink: 0;
+}
+
+.hours {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* --- Réseaux sociaux --- */
+.social {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-hairline);
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    color 140ms var(--ease-out),
+    background-color 140ms var(--ease-out),
+    border-color 140ms var(--ease-out),
+    transform 140ms var(--ease-out);
+}
+
+.social a:hover {
+  color: var(--text-primary);
+  background: rgba(53, 167, 240, 0.12);
+  border-color: rgba(53, 167, 240, 0.35);
+}
+
+.social a:active {
+  transform: scale(0.94);
+}
+
+/* --- Colonnes de liens --- */
+.col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  list-style: none;
+}
+
+.colTitle {
+  margin-bottom: 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.col a {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  transition: color 140ms var(--ease-out);
+}
+
+.col a:hover {
+  color: var(--text-primary);
+}
+
+.area {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* --- Bas de page --- */
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border-hairline);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.vat {
+  opacity: 0.85;
+}
+
+@media (min-width: 560px) {
+  .cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: 1.6fr 0.9fr 0.9fr;
+    gap: 2.5rem 3rem;
+  }
+  /* la zone d'intervention passe sous la marque, alignée à la 1re colonne */
+  .grid > .col:last-child {
+    grid-column: 2 / -1;
+  }
+  .bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1040px) {
+  .grid {
+    grid-template-columns: 1.7fr 0.85fr 0.85fr 1.3fr;
+  }
+  .grid > .col:last-child {
+    grid-column: auto;
+  }
+}

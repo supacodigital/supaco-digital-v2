@@ -1,0 +1,90 @@
+/*
+ * Bandeau défilant — fond couleur bas du hero (#05070D), texte discret.
+ * Défilement CSS pur : la piste contient deux copies identiques de la liste,
+ * on translate l'ensemble de -50 % en boucle → défilement sans couture.
+ */
+.marquee {
+  --marquee-duration: 40s;
+  position: relative;
+  overflow: hidden;
+  background-color: #05070d;
+}
+
+.viewport {
+  display: flex;
+  width: max-content;
+  /* masque latéral : le texte s'estompe sur les bords au lieu d'être coupé net */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+}
+
+.marquee:hover .viewport {
+  animation-play-state: paused;
+}
+
+.group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2.5rem;
+  /* padding vertical symétrique : texte réellement centré dans le bandeau */
+  padding: 0.7rem 1.25rem;
+  margin: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+/* puce séparatrice avant chaque entrée */
+.item::before {
+  content: "";
+  position: absolute;
+  left: -1.35rem;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--brand-cyan);
+  translate: 0 -50%;
+  opacity: 0.6;
+}
+
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    animation: none;
+    /* une seule copie visible, sans défilement */
+    width: 100%;
+    overflow-x: auto;
+  }
+  .viewport > .group[aria-hidden] {
+    display: none;
+  }
+}

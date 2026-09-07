@@ -1,0 +1,214 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  display: flex;
+  align-items: center;
+  /* pleine fenêtre : le hero passe SOUS le header transparent superposé */
+  min-height: 100svh;
+  /* le contenu démarre sous la barre du header (fixed, hors flux) */
+  padding-top: calc(var(--header-h) + clamp(2rem, 6vw, 4.5rem));
+  padding-bottom: clamp(4rem, 10vw, 7rem);
+}
+
+/* --- Fond (photo + voile + décor) --- */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* conteneur de l'image : déborde en haut/bas pour laisser de la marge au parallaxe */
+.imageWrap {
+  position: absolute;
+  inset: -12% 0;
+  will-change: transform;
+}
+
+.image {
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+
+/* voile dégradé sombre — symétrique (contenu centré), renforcé au centre et en bas.
+   garantit le contraste du texte blanc par-dessus la neige. */
+.veil {
+  position: absolute;
+  inset: 0;
+  background:
+    /* teinte de marque diffuse, centrée haut */
+    radial-gradient(
+      60rem 40rem at 50% 10%,
+      rgba(53, 167, 240, 0.2),
+      transparent 60%
+    ),
+    /* assombrissement vertical : plein derrière le contenu, plus léger sur les bords hauts */
+    linear-gradient(
+      180deg,
+      rgba(5, 7, 13, 0.78) 0%,
+      rgba(5, 7, 13, 0.88) 45%,
+      rgba(6, 9, 16, 0.9) 70%,
+      rgba(5, 7, 13, 0.92) 100%
+    ),
+    /* voile radial centré : concentre l'obscurité derrière le bloc de texte */
+    radial-gradient(
+      120% 90% at 50% 55%,
+      rgba(5, 7, 13, 0.55) 0%,
+      rgba(5, 7, 13, 0.2) 55%,
+      transparent 100%
+    ),
+    /* fondu bas vers la couleur de page (transition vers la section suivante) */
+    linear-gradient(
+      180deg,
+      rgba(5, 7, 13, 0) 0%,
+      rgba(5, 7, 13, 0) 62%,
+      var(--bg-900) 100%
+    );
+}
+
+.ghostMark {
+  position: absolute;
+  top: 50%;
+  right: -6%;
+  translate: 0 -50%;
+  width: min(40vw, 500px);
+  height: auto;
+  color: #05070d;
+  opacity: 0.38;
+}
+
+@media (max-width: 900px) {
+  .ghostMark {
+    top: auto;
+    bottom: -6%;
+    right: 50%;
+    translate: 50% 0;
+    width: 78vw;
+    opacity: 0.18;
+  }
+  .veil {
+    background:
+      radial-gradient(
+        40rem 30rem at 50% 6%,
+        rgba(53, 167, 240, 0.18),
+        transparent 60%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(5, 7, 13, 0.9) 0%,
+        rgba(5, 7, 13, 0.85) 45%,
+        rgba(5, 7, 13, 0.82) 62%,
+        var(--bg-900) 100%
+      );
+  }
+}
+
+/* --- Contenu --- */
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 60rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+  background: rgba(10, 14, 26, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--text-secondary);
+}
+
+.eyebrow svg {
+  color: var(--brand-cyan);
+}
+
+.title {
+  margin-top: 1.35rem;
+  font-size: clamp(2.3rem, 5.6vw, 3.85rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  /* léger halo sombre : sécurise la lisibilité même si le voile bouge */
+  text-shadow: 0 2px 34px rgba(0, 0, 0, 0.45);
+}
+
+.accent {
+  /* dégradé éclairci : lisible sur la photo (le vrai dégradé signature reste
+     réservé au logo et aux boutons) */
+  background: var(--brand-gradient-bright);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.lede {
+  margin-top: 1.35rem;
+  max-width: 52ch;
+  margin-inline: auto;
+  font-size: clamp(1.02rem, 1.6vw, 1.16rem);
+  color: var(--text-secondary);
+  text-shadow: 0 1px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Actions --- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 52px;
+  padding: 0 1.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border: 1px solid var(--border-soft);
+  background: rgba(10, 14, 26, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+
+.secondary:hover {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.secondary:active {
+  transform: scale(0.97);
+}
+
+.reveal {
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .imageWrap {
+    inset: 0;
+  }
+}

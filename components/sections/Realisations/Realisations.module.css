@@ -1,0 +1,367 @@
+/*
+ * Section « Réalisations » — même parti pris clair que Services (blanc cassé,
+ * texte bleu nuit). Rail horizontal scrollable, y compris en desktop.
+ */
+.realisations {
+  /* --- palette locale de la section claire (identique à Services) --- */
+  --s-bg: #f6f8fc;
+  --s-surface: #ffffff;
+  --s-ink: #011a42;
+  --s-ink-soft: #3a4a6b;
+  --s-ink-muted: #64738f;
+  --s-border: #e6ebf5;
+  --s-border-strong: #d5deec;
+
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--space-section);
+  background-color: var(--s-bg);
+  color: var(--s-ink-soft);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- En-tête : texte à gauche, flèches à droite --- */
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.headText {
+  max-width: 34rem;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-blue);
+}
+
+.title {
+  margin-top: 0.75rem;
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--s-ink);
+  max-width: 20ch;
+}
+
+.lede {
+  margin-top: 1rem;
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--s-ink-muted);
+}
+
+/* --- Flèches de navigation (desktop) --- */
+.arrows {
+  display: none;
+  flex-shrink: 0;
+  gap: 0.6rem;
+}
+
+@media (min-width: 720px) and (hover: hover) and (pointer: fine) {
+  .arrows {
+    display: flex;
+  }
+}
+
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--s-ink);
+  background: var(--s-surface);
+  border: 1px solid var(--s-border-strong);
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    opacity 160ms var(--ease-out);
+}
+
+.arrow:hover:not(:disabled) {
+  border-color: var(--brand-blue);
+  color: var(--brand-blue);
+}
+
+.arrow:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* --- Rail horizontal --- */
+.rail {
+  list-style: none;
+  margin: clamp(2.25rem, 5vw, 3.25rem) 0 0;
+  padding: 0.5rem var(--container-pad) 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--container-pad);
+  overscroll-behavior-x: contain;
+  /* fondu sur les bords : les cartes s'estompent au lieu d'être coupées net.
+     désactivé au tout début / à la toute fin via les data-attributes. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 4%,
+    #000 96%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 4%,
+    #000 96%,
+    transparent 100%
+  );
+}
+
+.rail[data-at-start] {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 0,
+    #000 96%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(90deg, #000 0, #000 96%, transparent 100%);
+}
+
+.rail[data-at-end] {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 4%,
+    #000 100%
+  );
+  mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 100%);
+}
+
+.rail[data-at-start][data-at-end] {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* scrollbar fine, teinte bleu nuit */
+.rail::-webkit-scrollbar {
+  height: 6px;
+}
+
+.rail::-webkit-scrollbar-track {
+  background: var(--s-border);
+  border-radius: var(--radius-pill);
+}
+
+.rail::-webkit-scrollbar-thumb {
+  background: var(--s-border-strong);
+  border-radius: var(--radius-pill);
+}
+
+.rail::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--brand-blue) 45%, var(--s-border-strong));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail {
+    scroll-behavior: auto;
+  }
+}
+
+/* --- La carte --- */
+.card {
+  flex: 0 0 clamp(280px, 78vw, 340px);
+  scroll-snap-align: start;
+  display: flex;
+}
+
+.cardLink {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 0 1.25rem;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  border: 0;
+  transition:
+    transform 190ms var(--ease-out),
+    box-shadow 190ms var(--ease-out),
+    border-color 190ms var(--ease-out);
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--brand-blue);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cardLink:hover {
+    transform: translateY(-4px);
+  }
+
+  .cardLink:hover .shotImg {
+    transform: scale(1.04);
+  }
+
+  .cardLink:hover .reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cardLink:hover .revealIcon {
+    transform: translate(3px, -3px);
+  }
+}
+
+.cardLink:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 120ms;
+}
+
+/* --- Cadre navigateur autour de la capture --- */
+.frame {
+  display: block;
+  border-radius: calc(var(--radius-lg) - 5px);
+  overflow: hidden;
+  border: 1px solid var(--s-border);
+  background: #f0f3f9;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  background: #eef2f8;
+  border-bottom: 1px solid var(--s-border);
+}
+
+.chrome span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--s-border-strong);
+}
+
+.shot {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #e8edf6 0%, #dde5f1 100%);
+}
+
+.shotImg {
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 320ms var(--ease-out);
+}
+
+/* --- Métadonnées --- */
+.meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-inline: 0.4rem;
+}
+
+.metaMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.name {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--s-ink);
+}
+
+.sector {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--s-ink-muted);
+  /* réserve 2 lignes : les cartes gardent la même hauteur quel que soit
+     l'enroulement du libellé secteur / type */
+  min-height: calc(0.82rem * 1.4 * 2);
+}
+
+.area {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--s-border-strong);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--s-ink-soft);
+  white-space: nowrap;
+}
+
+/* --- Révélation au hover / focus : lien vers l'étude de cas --- */
+.reveal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+  padding-inline: 0.4rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--brand-blue);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 190ms var(--ease-out),
+    transform 190ms var(--ease-out);
+}
+
+.revealIcon {
+  transition: transform 190ms var(--ease-out);
+}
+
+.cardLink:focus-visible .reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Réduction de mouvement --- */
+@media (prefers-reduced-motion: reduce) {
+  .cardLink,
+  .shotImg,
+  .reveal,
+  .revealIcon,
+  .arrow {
+    transition: none;
+  }
+  .cardLink:hover {
+    transform: none;
+  }
+  .cardLink:hover .shotImg {
+    transform: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
