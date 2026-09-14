@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/SupacoMark";
@@ -35,7 +36,6 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
-  const [servicesExpandedMobile, setServicesExpandedMobile] = useState(false);
   const pathname = usePathname();
   const closeTimer = useRef<number | null>(null);
   const megaGroupRef = useRef<HTMLLIElement | null>(null);
@@ -47,7 +47,6 @@ export function Header() {
     setPrevPathname(pathname);
     setMenuOpen(false);
     setMegaOpen(false);
-    setServicesExpandedMobile(false);
   }
 
   // état "scrolled" : le header passe de transparent à bleu nuit opaque.
@@ -162,7 +161,7 @@ export function Header() {
       data-mega={megaOpen || undefined}
     >
       <Container as="div" className={styles.bar}>
-        <Logo priority />
+        <Logo priority height={26} />
 
         {/* desktop : nav + CTA groupés à droite */}
         <div className={styles.right}>
@@ -201,7 +200,7 @@ export function Header() {
                     <Link
                       href={item.href}
                       className={styles.navLink}
-                      // pages encore à créer (/tarifs, /blog) : pas de prefetch
+                      // ancres de l'accueil : rien à précharger
                       prefetch={false}
                       aria-current={
                         isActive(pathname, item.href) ? "page" : undefined
@@ -252,20 +251,26 @@ export function Header() {
       {/* Mega-menu desktop — plein largeur, sous la barre */}
       <div
         className={styles.megaWrap}
-        onMouseEnter={openMega}
-        onMouseLeave={scheduleCloseMega}
         onBlur={handleMegaBlur}
         onKeyDown={handlePanelKeyDown}
         hidden={!megaOpen}
       >
-        <MegaMenu id={MEGA_MENU_ID} />
-        {/* voile : assombrit la page derrière le mega-menu, clic = fermer */}
+        {/* le survol qui garde le menu ouvert est limité au panneau lui-même
+            (pas au scrim, qui couvre toute la hauteur de la page) : sinon le
+            menu ne se ferme jamais tant que la souris reste n'importe où au-
+            dessus du contenu de la page. */}
+        <div onMouseEnter={openMega} onMouseLeave={scheduleCloseMega}>
+          <MegaMenu id={MEGA_MENU_ID} />
+        </div>
+        {/* voile : assombrit/floute la page derrière le mega-menu, clic ou
+            survol = fermer */}
         <button
           type="button"
           className={styles.megaScrim}
           aria-label="Fermer le menu Services"
           tabIndex={-1}
           onClick={() => setMegaOpen(false)}
+          onMouseEnter={scheduleCloseMega}
         />
       </div>
 
@@ -281,37 +286,36 @@ export function Header() {
             {mainNav.map((item, i) =>
               item.megaMenu === "services" ? (
                 <li key={item.href} style={{ "--i": i } as React.CSSProperties}>
-                  <button
-                    type="button"
-                    className={styles.mobileLinkToggle}
-                    aria-expanded={servicesExpandedMobile}
-                    onClick={() => setServicesExpandedMobile((v) => !v)}
+                  <Link
+                    href={item.href}
+                    className={styles.mobileLink}
+                    aria-current={
+                      isActive(pathname, item.href) ? "page" : undefined
+                    }
                   >
                     {item.label}
-                    <ChevronDownIcon
-                      size={16}
-                      className={styles.mobileCaret}
-                    />
-                  </button>
-                  <ul
-                    className={styles.mobileSubList}
-                    hidden={!servicesExpandedMobile}
-                  >
+                  </Link>
+                  <ul className={styles.mobileSubGrid}>
                     {services.map((s) => (
                       <li key={s.slug}>
                         <Link
                           href={`/services/${s.slug}`}
-                          className={styles.mobileSubLink}
+                          className={styles.mobileSubCard}
                         >
-                          {s.title}
+                          <Image
+                            src={s.image}
+                            alt=""
+                            fill
+                            sizes="45vw"
+                            className={styles.mobileSubImg}
+                          />
+                          <span className={styles.mobileSubVeil} />
+                          <span className={styles.mobileSubTitle}>
+                            {s.title}
+                          </span>
                         </Link>
                       </li>
                     ))}
-                    <li>
-                      <Link href="/services" className={styles.mobileSubLink}>
-                        Tous les services
-                      </Link>
-                    </li>
                   </ul>
                 </li>
               ) : (

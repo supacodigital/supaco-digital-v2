@@ -1,11 +1,11 @@
 import {
   allServiceCities,
-  homeFaq,
   seoKeywords,
   serviceAreas,
   services,
   serviceContent,
   site,
+  testimonials,
 } from "@/lib/site";
 
 /**
@@ -15,7 +15,9 @@ import {
  * - `WebSite` : identité du site.
  * - `ProfessionalService` (#localbusiness) : fiche d'entreprise locale enrichie
  *   — zones desservies détaillées (Pays de Gex, Ain, Genève), catalogue
- *   d'offres, mots-clés, lien vers le nœud organisation.
+ *   d'offres, mots-clés, avis clients (`aggregateRating` + `review`, alimentés
+ *   par `testimonials` — source : fiche Google Business Profile), lien vers
+ *   le nœud organisation.
  * - `Service` (un par pilier) : rattachés au prestataire, avec `areaServed`.
  *
  * Tout est en un seul `@graph` pour que Google relie les nœuds par `@id`.
@@ -32,6 +34,9 @@ export function HomeStructuredData() {
     })),
     ...allServiceCities.map((name) => ({ "@type": "City", name })),
   ];
+
+  const averageRating =
+    testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length;
 
   const graph = [
     {
@@ -85,6 +90,22 @@ export function HomeStructuredData() {
         closes: "18:00",
       },
       sameAs: site.social.map((s) => s.href),
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: averageRating,
+        reviewCount: testimonials.length,
+        bestRating: 5,
+      },
+      review: testimonials.map((t) => ({
+        "@type": "Review",
+        author: { "@type": "Person", name: t.author },
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: t.rating,
+          bestRating: 5,
+        },
+        reviewBody: t.text,
+      })),
       hasOfferCatalog: {
         "@type": "OfferCatalog",
         name: "Services Supaco Digital",
@@ -112,15 +133,6 @@ export function HomeStructuredData() {
         name: zone.label,
       })),
     })),
-    {
-      "@type": "FAQPage",
-      "@id": `${site.url}/#faq`,
-      mainEntity: homeFaq.map((item) => ({
-        "@type": "Question",
-        name: item.q,
-        acceptedAnswer: { "@type": "Answer", text: item.a },
-      })),
-    },
   ];
 
   const data = {

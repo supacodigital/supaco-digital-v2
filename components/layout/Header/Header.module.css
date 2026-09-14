@@ -26,8 +26,9 @@
   box-shadow: 0 10px 34px -14px rgba(0, 0, 0, 0.6);
 }
 
-/* menu mobile ouvert : on force le fond plein même en haut de page */
-.header[data-open] {
+/* menu mobile ou mega-menu ouvert : on force le fond plein même en haut de page */
+.header[data-open],
+.header[data-mega] {
   background-color: var(--header-bg);
 }
 
@@ -76,9 +77,10 @@
     background-color 140ms var(--ease-out);
 }
 
-/* au scroll : texte blanc franc */
+/* au scroll, menu mobile ou mega-menu ouvert : texte blanc franc */
 .header[data-scrolled] .navLink,
-.header[data-open] .navLink {
+.header[data-open] .navLink,
+.header[data-mega] .navLink {
   color: rgba(244, 247, 255, 0.82);
 }
 
@@ -172,8 +174,6 @@
   right: 0;
   top: 100%;
   z-index: 20;
-  transform-origin: top center;
-  animation: megaIn 220ms var(--ease-out);
 }
 
 /* le panneau reste au-dessus du voile */
@@ -182,7 +182,10 @@
   z-index: 2;
 }
 
-/* voile derrière le panneau — commence sous la barre du header, clic = fermer */
+/* voile derrière le panneau — commence sous la barre du header, clic = fermer.
+   flou instantané (pas d'animation) : la page derrière (Hero, contenu) doit
+   apparaître floutée, pas juste assombrie — opacité faible pour laisser le
+   flou visible plutôt que masqué par du noir. */
 .megaScrim {
   position: fixed;
   inset: var(--header-h) 0 0;
@@ -191,29 +194,9 @@
   width: 100%;
   padding: 0;
   border: 0;
-  background: rgba(4, 6, 12, 0.55);
+  background: rgba(4, 6, 12, 0.15);
+  backdrop-filter: blur(16px);
   cursor: default;
-  animation: scrimIn 220ms var(--ease-out);
-}
-
-@keyframes scrimIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes megaIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 899px) {
@@ -281,8 +264,7 @@
   }
 }
 
-.mobileLink,
-.mobileLinkToggle {
+.mobileLink {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -296,45 +278,60 @@
   transition: color 140ms var(--ease-out);
 }
 
-.mobileLink:active,
-.mobileLinkToggle:active {
+.mobileLink:active {
   color: var(--brand-cyan);
 }
 
-.mobileCaret {
-  flex-shrink: 0;
-  transition: transform 200ms var(--ease-out);
-}
-
-/* rotation pilotée par l'état du bouton (aria-expanded), pas par une prop d'icône */
-.mobileLinkToggle[aria-expanded="true"] .mobileCaret {
-  transform: rotate(180deg);
-}
-
-/* sous-liste services (mobile) */
-.mobileSubList {
+/* sous-grille services (mobile) : mini-cartes photo, toujours visibles */
+.mobileSubGrid {
   list-style: none;
-  padding: 0 0 0.75rem 0.25rem;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0.25rem 0.25rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
 }
 
-.mobileSubList li {
+.mobileSubGrid li {
   border-bottom: none;
   opacity: 1;
   transform: none;
   animation: none;
 }
 
-.mobileSubLink {
-  display: block;
-  padding: 0.7rem 0;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  transition: color 140ms var(--ease-out);
+.mobileSubCard {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 96px;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
-.mobileSubLink:active {
+.mobileSubImg {
+  object-fit: cover;
+}
+
+.mobileSubVeil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 7, 13, 0.15) 0%,
+    rgba(5, 7, 13, 0.72) 100%
+  );
+}
+
+.mobileSubTitle {
+  position: relative;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.mobileSubCard:active .mobileSubTitle {
   color: var(--brand-cyan);
 }
 
@@ -362,15 +359,12 @@
     transition: none;
   }
   .mobileMenu,
-  .mobileList li,
-  .megaWrap,
-  .megaScrim {
+  .mobileList li {
     animation: none;
     opacity: 1;
     transform: none;
   }
   .caret,
-  .mobileCaret,
   .navLink,
   .menuToggle {
     transition: none;

@@ -1,0 +1,76 @@
+/*
+ * Décor du héro — vidéo de fond + voile de lisibilité.
+ * Le voile est dissymétrique : il assombrit fortement la gauche (où vit le
+ * texte) et laisse respirer la droite, où passe le flux lumineux.
+ */
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+  background: var(--bg-900);
+}
+
+/* Poster : visible au premier rendu et tant que la vidéo n'est pas montée */
+.poster {
+  position: absolute;
+  inset: 0;
+  background-image: url("/hero/hero-poster.jpg");
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* Voile : garantit le contraste WCAG du texte blanc par-dessus la vidéo */
+.veil {
+  position: absolute;
+  inset: 0;
+  background:
+    /* colonne sombre à gauche, derrière le bloc de texte */
+    linear-gradient(
+      90deg,
+      rgba(5, 7, 13, 0.92) 0%,
+      rgba(5, 7, 13, 0.82) 32%,
+      rgba(5, 7, 13, 0.45) 62%,
+      rgba(5, 7, 13, 0.3) 100%
+    ),
+    /* assombrissement vertical + fondu vers la section suivante */
+    linear-gradient(
+      180deg,
+      rgba(5, 7, 13, 0.65) 0%,
+      rgba(5, 7, 13, 0.3) 35%,
+      rgba(5, 7, 13, 0.45) 72%,
+      var(--bg-900) 100%
+    );
+}
+
+/* sur petit écran le texte occupe toute la largeur : voile uniforme et plus dense */
+@media (max-width: 900px) {
+  .veil {
+    background: linear-gradient(
+      180deg,
+      rgba(5, 7, 13, 0.82) 0%,
+      rgba(5, 7, 13, 0.72) 45%,
+      rgba(5, 7, 13, 0.8) 75%,
+      var(--bg-900) 100%
+    );
+  }
+}
+
+/* Grain : casse le banding des dégradés sur grand écran */
+.grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}

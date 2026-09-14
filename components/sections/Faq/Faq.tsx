@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -74,6 +75,16 @@ export function Faq() {
             ? Posez-la nous directement.
           </p>
         </header>
+
+        <span className={styles.banner}>
+          <Image
+            src="/faq/faq-photo.webp"
+            alt=""
+            fill
+            sizes="(max-width: 900px) 100vw, 900px"
+            className={styles.bannerImg}
+          />
+        </span>
 
         <dl className={styles.list}>
           {homeFaq.map((entry, i) => {

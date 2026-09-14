@@ -1,0 +1,99 @@
+/*
+ * Décor de la section Contact — halos + grille en perspective + grain.
+ * Aucune image : tout est CSS/SVG inline (zéro requête, aucun impact LCP).
+ * Seules `transform` et `opacity` sont animées (compositing GPU, pas de layout).
+ */
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+  /* le décor s'éteint sur les derniers % : la section ne se termine pas sur une
+     coupure nette mais se fond dans le noir qui mène au footer */
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 97%);
+  mask-image: linear-gradient(180deg, #000 60%, transparent 97%);
+}
+
+/* --- 1. Halos « aurore » --- */
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  /* le flou est figé sur une couche isolée : pas de recalcul pendant l'animation */
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.aurora[data-layer="a"] {
+  top: -16%;
+  left: -8%;
+  width: min(60vw, 820px);
+  aspect-ratio: 1.35;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(53, 167, 240, 0.42) 0%,
+    rgba(53, 167, 240, 0) 68%
+  );
+  animation: drift-a 26s var(--ease-in-out) infinite alternate;
+}
+
+.aurora[data-layer="b"] {
+  right: -12%;
+  bottom: -18%;
+  width: min(55vw, 720px);
+  aspect-ratio: 1.1;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(37, 99, 235, 0.46) 0%,
+    rgba(37, 99, 235, 0) 70%
+  );
+  animation: drift-b 32s var(--ease-in-out) infinite alternate;
+}
+
+/* déplacements amples mais très lents — perçus comme une respiration, pas comme
+   une animation : on ne veut rien qui attire l'œil hors du formulaire */
+@keyframes drift-a {
+  to {
+    transform: translate3d(9%, 7%, 0) scale(1.12);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate3d(-8%, -6%, 0) scale(1.08);
+  }
+}
+
+/* --- 2. Grille en perspective --- */
+.gridWrap {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: clamp(240px, 38vh, 420px);
+  /* double masque : le fondu du SVG gère la profondeur, celui-ci les bords */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+.grid {
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+/* --- 3. Grain : casse le banding des dégradés sur grand écran --- */
+.grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- Réduction de mouvement : le décor reste, le mouvement disparaît --- */
+@media (prefers-reduced-motion: reduce) {
+  .aurora {
+    animation: none;
+  }
+}

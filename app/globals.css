@@ -35,10 +35,6 @@
   /* variante éclaircie : accent de TEXTE sur fond sombre/photo (contraste WCAG) */
   --brand-gradient-bright: linear-gradient(120deg, #6cc3f6 0%, #4a90f0 100%);
 
-  /* --- Halo de fond --- */
-  --glow-cyan: rgba(53, 167, 240, 0.22);
-  --glow-blue: rgba(37, 99, 235, 0.2);
-
   /* --- Rayons --- */
   --radius-sm: 10px;
   --radius-md: 16px;
@@ -83,26 +79,9 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Lenis gère le smooth scroll : on neutralise le natif quand il est actif */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-stopped {
-  overflow: clip;
-}
-
 body {
   min-height: 100%;
-  background:
-    radial-gradient(60rem 60rem at 12% -10%, var(--glow-cyan), transparent 60%),
-    radial-gradient(55rem 55rem at 100% 0%, var(--glow-blue), transparent 55%),
-    linear-gradient(180deg, var(--bg-800) 0%, var(--bg-900) 100%);
+  background: linear-gradient(180deg, var(--bg-800) 0%, var(--bg-900) 100%);
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
@@ -220,6 +199,29 @@ main {
 
 .skip-link:focus-visible {
   transform: translateY(0);
+}
+
+/* --- Appareils tactiles : pas d'état de survol ---
+   Sur tactile, `:hover` se déclenche au tap et reste « collé » jusqu'au tap
+   suivant. On neutralise donc l'effet de survol (déplacement, mise à l'échelle,
+   lueur) partout où il n'est pas déjà protégé par `@media (hover: hover)`.
+   Les changements de couleur restent : ils font un retour de tap acceptable.
+   `:active` n'est pas concerné — c'est lui qui porte le retour au toucher. */
+@media (hover: none) {
+  a:hover,
+  button:hover,
+  label:hover,
+  [role="button"]:hover,
+  a:hover *,
+  button:hover *,
+  label:hover * {
+    transform: none;
+  }
+
+  /* le marquee ne doit pas se figer quand on le touche */
+  [class*="marquee"]:hover [class*="viewport"] {
+    animation-play-state: running;
+  }
 }
 
 /* --- Respect de prefers-reduced-motion : on garde opacité/couleur, on retire le mouvement --- */

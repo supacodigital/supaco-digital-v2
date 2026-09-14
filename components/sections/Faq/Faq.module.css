@@ -39,11 +39,29 @@
 .inner {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+/* --- Bandeau image, pleine largeur du contenu --- */
+.banner {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 62rem;
+  aspect-ratio: 16 / 9;
+  margin-top: clamp(2.25rem, 5vw, 3.25rem);
+  overflow: clip;
+  box-shadow: 0 20px 40px -20px rgba(1, 26, 66, 0.35);
+}
+
+.bannerImg {
+  object-fit: cover;
 }
 
 /* --- En-tête --- */
 .head {
   max-width: 40rem;
+  text-align: center;
 }
 
 .eyebrow {
@@ -189,6 +207,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem 1.5rem;
+  width: 100%;
+  max-width: 52rem;
   margin-top: clamp(2rem, 4vw, 2.75rem);
 }
 

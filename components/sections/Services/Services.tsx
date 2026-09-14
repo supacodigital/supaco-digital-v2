@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -41,10 +42,37 @@ const icons: Record<(typeof services)[number]["icon"], Icon> = {
  */
 export function Services() {
   const root = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLUListElement>(null);
+  const [activeCard, setActiveCard] = useState(0);
+
+  // pagination du slider mobile : la carte la plus visible pilote le point actif
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const cards = Array.from(grid.children) as HTMLElement[];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const mostVisible = entries.reduce((best, entry) =>
+          entry.intersectionRatio > best.intersectionRatio ? entry : best,
+        );
+        if (mostVisible.intersectionRatio > 0) {
+          setActiveCard(cards.indexOf(mostVisible.target as HTMLElement));
+        }
+      },
+      { root: grid, threshold: [0.5, 0.75, 1] },
+    );
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      // < 620px : cartes en slider horizontal (scroll-snap) — le stagger
+      // d'entrée décale visiblement une carte par rapport à sa voisine déjà
+      // visible sur le bord ; pas de valeur ajoutée dans ce contexte.
+      if (window.matchMedia("(max-width: 619px)").matches) return;
 
       const cards = gsap.utils.toArray<HTMLElement>(`.${styles.card}`);
       gsap.from(cards, {
@@ -86,7 +114,7 @@ export function Services() {
         <header className={styles.head}>
           <p className={styles.eyebrow}>Nos expertises</p>
           <h2 id="services-title" className={styles.title}>
-            Agence web, IA et automatisation — un seul interlocuteur
+            Agence web, IA et automatisation
           </h2>
           <p className={styles.lede}>
             De la création de site internet à l&apos;outil métier sur-mesure,
@@ -95,7 +123,7 @@ export function Services() {
           </p>
         </header>
 
-        <ul className={styles.grid}>
+        <ul className={styles.grid} ref={gridRef}>
           {services.map((service, i) => {
             const IconEl = icons[service.icon];
             return (
@@ -106,9 +134,16 @@ export function Services() {
               >
                 <span className={styles.topline} aria-hidden="true" />
 
-                <span className={styles.cardHead}>
+                <span className={styles.thumb}>
+                  <Image
+                    src={service.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 619px) 100vw, (max-width: 1079px) 50vw, 25vw"
+                    className={styles.thumbImg}
+                  />
                   <span className={styles.iconWrap} aria-hidden="true">
-                    <IconEl size={24} weight="duotone" />
+                    <IconEl size={22} weight="duotone" />
                   </span>
                   <span className={styles.index} aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}
@@ -163,6 +198,17 @@ export function Services() {
             );
           })}
         </ul>
+
+        {/* pagination du slider mobile — décorative, le swipe reste le contrôle principal */}
+        <div className={styles.dots} aria-hidden="true">
+          {services.map((service, i) => (
+            <span
+              key={service.slug}
+              className={styles.dot}
+              data-active={i === activeCard || undefined}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

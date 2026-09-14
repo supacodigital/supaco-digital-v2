@@ -29,8 +29,8 @@ function LogoImage({
       src={logoDesktop}
       alt="Supaco Digital"
       height={height}
-      // largeur calculée depuis le ratio natif 840×296
-      width={Math.round((height * 840) / 296)}
+      // largeur calculée depuis le ratio natif 829×243
+      width={Math.round((height * 829) / 243)}
       priority={priority}
       className={styles.img}
       sizes="(max-width: 480px) 150px, 190px"

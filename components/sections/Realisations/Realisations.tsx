@@ -6,11 +6,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-} from "@phosphor-icons/react";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import { Container } from "@/components/ui/Container";
 import { projects } from "@/lib/site";
 import styles from "./Realisations.module.css";
@@ -29,13 +25,20 @@ if (typeof window !== "undefined") {
 export function Realisations() {
   const root = useRef<HTMLElement>(null);
   const rail = useRef<HTMLUListElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
-  // état des flèches : début / fin de rail atteints ?
-  const syncEdges = useCallback(() => {
+  // dot actif (carte la plus proche du bord gauche) + fondu de bord du rail
+  const syncScrollState = useCallback(() => {
     const el = rail.current;
     if (!el) return;
+    const cards = el.querySelectorAll<HTMLElement>(`.${styles.card}`);
+    if (!cards.length) return;
+    const step = cards[0].offsetWidth + 24;
+    const index = Math.round(el.scrollLeft / step);
+    setActiveIndex(Math.min(index, cards.length - 1));
+
     const max = el.scrollWidth - el.clientWidth;
     setAtStart(el.scrollLeft <= 1);
     setAtEnd(el.scrollLeft >= max - 1);
@@ -44,22 +47,22 @@ export function Realisations() {
   useEffect(() => {
     const el = rail.current;
     if (!el) return;
-    syncEdges();
-    el.addEventListener("scroll", syncEdges, { passive: true });
-    window.addEventListener("resize", syncEdges);
+    syncScrollState();
+    el.addEventListener("scroll", syncScrollState, { passive: true });
+    window.addEventListener("resize", syncScrollState);
     return () => {
-      el.removeEventListener("scroll", syncEdges);
-      window.removeEventListener("resize", syncEdges);
+      el.removeEventListener("scroll", syncScrollState);
+      window.removeEventListener("resize", syncScrollState);
     };
-  }, [syncEdges]);
+  }, [syncScrollState]);
 
-  // défilement d'une "page" (~largeur d'une carte + gap)
-  const scrollByCard = useCallback((direction: 1 | -1) => {
+  // défilement direct vers la carte d'index donné
+  const scrollToCard = useCallback((index: number) => {
     const el = rail.current;
     if (!el) return;
-    const card = el.querySelector<HTMLElement>(`.${styles.card}`);
-    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    el.scrollBy({ left: step * direction, behavior: "smooth" });
+    const card = el.querySelectorAll<HTMLElement>(`.${styles.card}`)[index];
+    if (!card) return;
+    el.scrollTo({ left: card.offsetLeft, behavior: "smooth" });
   }, []);
 
   useGSAP(
@@ -103,25 +106,19 @@ export function Realisations() {
             </p>
           </div>
 
-          <div className={styles.arrows} aria-hidden="true">
-            <button
-              type="button"
-              className={styles.arrow}
-              onClick={() => scrollByCard(-1)}
-              disabled={atStart}
-              tabIndex={-1}
-            >
-              <ArrowLeft size={17} weight="bold" />
-            </button>
-            <button
-              type="button"
-              className={styles.arrow}
-              onClick={() => scrollByCard(1)}
-              disabled={atEnd}
-              tabIndex={-1}
-            >
-              <ArrowRight size={17} weight="bold" />
-            </button>
+          <div className={styles.headRight}>
+            <span className={styles.photoCard}>
+              <video
+                className={styles.photoImg}
+                autoPlay
+                muted
+                loop
+                playsInline
+                aria-hidden="true"
+              >
+                <source src="/realisations/build-video.mp4" type="video/mp4" />
+              </video>
+            </span>
           </div>
         </header>
       </Container>
@@ -179,6 +176,21 @@ export function Realisations() {
           </li>
         ))}
       </ul>
+
+      <div className={styles.dots} role="tablist" aria-label="Pagination des réalisations">
+        {projects.map((project, index) => (
+          <button
+            key={project.slug}
+            type="button"
+            role="tab"
+            className={styles.dot}
+            data-active={index === activeIndex || undefined}
+            aria-selected={index === activeIndex}
+            aria-label={`Voir ${project.name}`}
+            onClick={() => scrollToCard(index)}
+          />
+        ))}
+      </div>
     </section>
   );
 }

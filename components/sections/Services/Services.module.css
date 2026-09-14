@@ -104,7 +104,7 @@
   color: var(--s-ink-muted);
 }
 
-/* --- Grille de cartes : 1 -> 2 -> 4 colonnes --- */
+/* --- Cartes : slider horizontal en mobile, grille 2 -> 4 colonnes ensuite --- */
 .grid {
   list-style: none;
   margin: 0;
@@ -112,10 +112,44 @@
   padding: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr;
   gap: clamp(1.25rem, 2vw, 1.75rem);
   /* les cartes d'une même rangée s'étirent à la hauteur de la plus grande */
   align-items: stretch;
+}
+
+/* < 620px : rangée qui défile, scroll-snap — chaque carte prend ~86% de la
+   largeur pour laisser apparaître un aperçu de la suivante sur le bord droit
+   (signal visuel de swipe). Déborde en pleine largeur, hors du padding de
+   section, via une marge négative égale au padding (voir --container-pad). */
+@media (max-width: 619px) {
+  .grid {
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    grid-template-columns: none;
+    width: calc(100% + var(--container-pad) * 2);
+    margin-inline: calc(var(--container-pad) * -1);
+    padding-inline: var(--container-pad);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--container-pad);
+    /* `overflow-x: auto` rend `overflow-y` implicitement `auto` : la zone de
+       défilement rogne donc aussi en hauteur. On lui donne de l'air en haut et
+       en bas (ombre + soulèvement des cartes), compensé par une marge négative
+       pour ne pas décaler le rythme vertical de la section. */
+    padding-block: 14px 18px;
+    margin-block: -14px -18px;
+    /* masque la scrollbar (le scroll-snap + les points suffisent comme affordance) */
+    scrollbar-width: none;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .grid > li {
+    scroll-snap-align: start;
+  }
 }
 
 @media (min-width: 620px) {
@@ -127,6 +161,35 @@
 @media (min-width: 1080px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* --- Pagination du slider mobile --- */
+.dots {
+  display: none;
+}
+
+@media (max-width: 619px) {
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--s-border-strong);
+    transition:
+      background-color 190ms var(--ease-out),
+      transform 190ms var(--ease-out);
+  }
+
+  .dot[data-active] {
+    background: var(--brand-blue);
+    transform: scale(1.3);
   }
 }
 
@@ -217,44 +280,75 @@
   }
 }
 
-/* --- Tête de carte : icône + numéro --- */
-.cardHead {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+/* --- Miniature photo en tête de carte --- */
+.thumb {
+  position: relative;
+  display: block;
+  /* la miniature déborde jusqu'aux bords de la carte : marge négative égale
+     au padding de la carte, largeur compensée d'autant */
+  width: calc(100% + clamp(1.6rem, 1.9vw, 2rem) * 2);
+  height: 132px;
+  margin: calc(clamp(1.9rem, 2.2vw, 2.4rem) * -1)
+    calc(clamp(1.6rem, 1.9vw, 2rem) * -1) 0;
+  /* icône/numéro (enfants directs) débordent librement ; seule la photo
+     ci-dessous est clippée à ce cadre. */
+  overflow: visible;
 }
 
+.thumbImg {
+  clip-path: inset(0);
+  object-fit: cover;
+  transition: transform 400ms var(--ease-out);
+}
+
+.card:hover .thumbImg {
+  transform: scale(1.05);
+}
+
+/* icône : badge flottant en coin bas-gauche de la miniature, chevauche
+   légèrement le bord photo/corps (reste dans le cadre clippé de la carte) */
 .iconWrap {
+  position: absolute;
+  left: 1.1rem;
+  bottom: -17px;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 15px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
   color: var(--accent);
-  /* tuile en couches : dégradé d'accent très dilué + anneau interne + reflet haut */
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--accent) 4%, #fff) 0%,
-    color-mix(in srgb, var(--accent) 16%, #fff) 100%
-  );
+  background: var(--s-surface);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 8px 18px -8px rgba(1, 26, 66, 0.35);
   transition: transform 190ms var(--ease-out);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .iconWrap {
+    transform: scale(1.06) rotate(-3deg);
+  }
+}
+
+/* numéro : badge en coin haut-droit de la miniature, sur la photo */
 .index {
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+  z-index: 1;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--s-border-strong);
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
 }
 
 /* --- Corps --- */
 .cardTitle {
-  margin-top: 1.6rem;
+  margin-top: 1.75rem;
   font-size: 1.3rem;
   font-weight: 600;
   letter-spacing: -0.015em;
@@ -376,5 +470,27 @@
   }
   .card:hover .iconWrap {
     transform: none;
+  }
+}
+
+/* --- Mobile : la carte doit tenir dans la fenêtre sous le header fixe ---
+   Sinon son bas reste hors écran quelle que soit la position de scroll. On
+   resserre la vignette et les espacements, jamais le contenu.
+   (Placé en fin de fichier : `.card` est défini plus haut, et à spécificité
+   égale c'est la dernière règle qui gagne.) */
+@media (max-width: 619px) {
+  .card {
+    min-height: 0;
+    padding-top: 1.5rem;
+    padding-bottom: 1.4rem;
+  }
+
+  .thumb {
+    height: 104px;
+  }
+
+  .features {
+    margin: 1.1rem 0 1.2rem;
+    gap: 0.6rem;
   }
 }

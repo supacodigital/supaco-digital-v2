@@ -1,0 +1,201 @@
+/*
+ * Section « Avis clients » — même parti pris clair que Services / Réalisations
+ * / FAQ (blanc cassé, texte bleu nuit), entre FAQ et Contact (dark). Bandeau
+ * défilant CSS pur, même pattern que ui/Marquee : deux copies de la piste,
+ * translateX(-50%) en boucle, pause au hover.
+ */
+.testimonials {
+  /* --- palette locale de la section claire (identique à Services/Faq) --- */
+  --s-bg: #f6f8fc;
+  --s-surface: #ffffff;
+  --s-ink: #011a42;
+  --s-ink-soft: #3a4a6b;
+  --s-ink-muted: #64738f;
+  --s-border: #e6ebf5;
+  --s-border-strong: #d5deec;
+
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: var(--space-section);
+  background-color: var(--s-bg);
+  color: var(--s-ink-soft);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand-blue);
+}
+
+.title {
+  margin-top: 0.75rem;
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--s-ink);
+}
+
+.ratingLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--s-border-strong);
+  background: var(--s-surface);
+}
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  color: #fbbc05;
+}
+
+.ratingText {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--s-ink-soft);
+}
+
+/* --- Bandeau défilant --- */
+.marquee {
+  --marquee-duration: 46s;
+  position: relative;
+  margin-top: clamp(2.75rem, 6vw, 4rem);
+  overflow: hidden;
+}
+
+.viewport {
+  display: flex;
+  width: max-content;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+}
+
+.marquee:hover .viewport {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.track {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1.25rem;
+  padding: 0.5rem var(--container-pad) 0.5rem 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* --- Carte avis --- */
+.card {
+  flex: 0 0 340px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--s-surface);
+  border: 1px solid var(--s-border);
+  box-shadow: 0 1px 2px rgba(1, 26, 66, 0.04), 0 18px 40px -24px rgba(1, 26, 66, 0.18);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--brand-gradient);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.author {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--s-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  font-size: 0.76rem;
+  color: var(--s-ink-muted);
+}
+
+.card .stars {
+  margin-top: 0.9rem;
+}
+
+.text {
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--s-ink-soft);
+  /* hauteur réservée = 5 lignes : les cartes gardent une hauteur cohérente
+     quelle que soit la longueur de l'avis */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    animation: none;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .viewport > .track[aria-hidden] {
+    display: none;
+  }
+}

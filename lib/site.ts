@@ -177,15 +177,15 @@ export type NavItem = {
 export const mainNav: NavItem[] = [
   { label: "Services", href: "/services", megaMenu: "services" },
   { label: "Réalisations", href: "/#portfolio" },
-  { label: "Tarifs", href: "/tarifs" },
-  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ];
 
 /**
  * Les quatre piliers de service.
- * `bg` : dégradé placeholder de la carte mega-menu (remplaçable par une vraie
- * photo plus tard). `motif` : clé du décor SVG dessiné dans ServiceCard.
+ * `bg` : dégradé de secours affiché pendant le chargement de `image` (et si
+ * l'image venait à manquer). `image` : photo de fond de la carte mega-menu
+ * (générée, optimisée WebP dans public/services/). `motif` : clé du décor SVG
+ * dessiné dans ServiceCard, conservé en filigrane discret sur l'image.
  * `icon` : nom de l'icône Phosphor pour la section Services de l'accueil.
  * `blurb` : phrase plus longue que `summary`, pour la carte éditoriale.
  * `features` : livrables clés listés dans la carte-produit de l'accueil.
@@ -211,6 +211,7 @@ export const services = [
       to: "#123a5e",
       accent: "#35a7f0",
     },
+    image: "/services/sites-web.webp",
     motif: "browser" as const,
   },
   {
@@ -232,6 +233,7 @@ export const services = [
       to: "#232159",
       accent: "#6a8cff",
     },
+    image: "/services/agents-ia.webp",
     motif: "network" as const,
   },
   {
@@ -253,6 +255,7 @@ export const services = [
       to: "#123f45",
       accent: "#2fd9c8",
     },
+    image: "/services/saas-sur-mesure.webp",
     motif: "blocks" as const,
   },
   {
@@ -274,6 +277,7 @@ export const services = [
       to: "#182c58",
       accent: "#4d7cff",
     },
+    image: "/services/automatisation.webp",
     motif: "flow" as const,
   },
 ] as const;
@@ -299,18 +303,46 @@ export const serviceContent: Record<
     metaDescription: string;
     h1: string;
     intro: string;
+    /** Accroche courte affichée sur le visuel du hero (sous le H1). */
+    tagline: string;
+    /** 3 chiffres/faits de réassurance affichés en bandeau sous le hero. */
+    stats: { value: string; label: string }[];
     sections: { title: string; body: string[] }[];
+    /** Méthode en 4 étapes — rassure sur le déroulé avant de demander un devis. */
+    process: { step: string; title: string; body: string }[];
+    /** Signes concrets que le service est fait pour le visiteur (auto-diagnostic). */
+    signals: string[];
     deliverables: string[];
     faq: { q: string; a: string }[];
+    /** Visuels de la page (générés, thème dark + dégradé signature). */
+    media: {
+      /** Image du hero — sert de poster à la vidéo et d'image LCP. */
+      poster: string;
+      /** Boucle vidéo muette du hero (désactivée en prefers-reduced-motion). */
+      video: string;
+      /** Visuel illustrant la section « méthode ». */
+      illustration: string;
+      /** Texte alternatif du visuel de section (accessibilité). */
+      illustrationAlt: string;
+      /** Texte alternatif de l'image du hero. */
+      posterAlt: string;
+    };
   }
 > = {
   "sites-web": {
     metaTitle: "Création de site internet dans le Pays de Gex",
     metaDescription:
-      "Agence web à Saint-Genis-Pouilly : création de sites vitrines, e-commerce et sur-mesure pour les TPE, PME et artisans du Pays de Gex, de l'Ain et de la région de Genève.",
+      "Agence web à Saint-Genis-Pouilly : création de sites vitrines, e-commerce et sur-mesure pour les TPE, PME et artisans du Pays de Gex et de Genève.",
     h1: "Création de site internet dans le Pays de Gex",
     intro:
       "Supaco Digital est l'agence web du bassin franco-suisse pour la création et la refonte de sites internet. Site vitrine, boutique en ligne ou plateforme sur-mesure : chaque projet est conçu à la main, optimisé pour le référencement local et pensé pour transformer vos visiteurs en clients.",
+    tagline:
+      "Un site qui vous ressemble, trouvable sur Google et pensé pour faire sonner le téléphone.",
+    stats: [
+      { value: "100 %", label: "sur-mesure, aucun template" },
+      { value: "SEO local", label: "intégré dès la conception" },
+      { value: "Mobile", label: "rapide et lisible partout" },
+    ],
     sections: [
       {
         title: "Un site vitrine qui inspire confiance",
@@ -332,6 +364,35 @@ export const serviceContent: Record<
         ],
       },
     ],
+    process: [
+      {
+        step: "01",
+        title: "On cadre votre besoin",
+        body: "Un échange pour comprendre votre activité, votre clientèle et ce que le site doit déclencher : appels, devis, commandes, prises de rendez-vous.",
+      },
+      {
+        step: "02",
+        title: "On conçoit la maquette",
+        body: "Structure des pages, arborescence et design sur-mesure. Vous validez le rendu avant qu'une ligne de code ne soit écrite.",
+      },
+      {
+        step: "03",
+        title: "On développe et on optimise",
+        body: "Intégration soignée, contenus rédigés pour les recherches locales, performances et accessibilité vérifiées sur mobile comme sur ordinateur.",
+      },
+      {
+        step: "04",
+        title: "On met en ligne et on vous forme",
+        body: "Mise en ligne, connexion à votre fiche Google Business Profile, et prise en main pour que vous restiez autonome au quotidien.",
+      },
+    ],
+    signals: [
+      "Vous n'avez pas de site, ou un site qui date de plusieurs années",
+      "On vous trouve sur les réseaux, mais pas sur Google",
+      "Votre site s'affiche mal sur téléphone",
+      "Vous ne pouvez pas modifier vos contenus vous-même",
+      "Vos concurrents apparaissent avant vous dans les recherches locales",
+    ],
     deliverables: [
       "Design sur-mesure aligné sur votre identité",
       "Rédaction et structuration du contenu pour le SEO local",
@@ -340,6 +401,15 @@ export const serviceContent: Record<
       "Formation à la prise en main et à la mise à jour",
       "Hébergement en France et nom de domaine",
     ],
+    media: {
+      poster: "/services/sites-web-hero.webp",
+      video: "/services/sites-web-hero.mp4",
+      illustration: "/services/sites-web-method.webp",
+      illustrationAlt:
+        "Panneaux de verre lumineux empilés en perspective, évoquant la structure des pages d'un site web.",
+      posterAlt:
+        "Structures de verre translucides bordées de lumière cyan et bleue, évoquant l'architecture d'un site internet.",
+    },
     faq: [
       {
         q: "Combien coûte un site internet dans le Pays de Gex ?",
@@ -358,10 +428,17 @@ export const serviceContent: Record<
   "agents-ia": {
     metaTitle: "Agent IA pour entreprise — Pays de Gex & Genève",
     metaDescription:
-      "Assistants IA et chatbots sur-mesure pour les TPE et PME du Pays de Gex, de l'Ain et de la région de Genève : répondez à vos clients et qualifiez les demandes automatiquement.",
+      "Assistants IA et chatbots sur-mesure pour les TPE et PME du Pays de Gex et de Genève : répondez à vos clients et qualifiez les demandes 24h/24.",
     h1: "Agents IA pour les entreprises du bassin franco-suisse",
     intro:
       "Un agent IA entraîné sur vos contenus répond à vos clients à toute heure, qualifie les demandes et fait gagner un temps précieux à votre équipe. Supaco Digital conçoit et intègre ces assistants pour les entreprises du Pays de Gex et de la région de Genève.",
+    tagline:
+      "Un assistant entraîné sur vos contenus, qui répond à vos clients même quand vous êtes sur un chantier.",
+    stats: [
+      { value: "24/7", label: "des réponses même hors horaires" },
+      { value: "Vos contenus", label: "l'agent ne répond que sur vos infos" },
+      { value: "Reprise humaine", label: "vous gardez la main" },
+    ],
     sections: [
       {
         title: "Un assistant qui connaît votre activité",
@@ -383,6 +460,35 @@ export const serviceContent: Record<
         ],
       },
     ],
+    process: [
+      {
+        step: "01",
+        title: "On liste les questions qui reviennent",
+        body: "Tarifs, horaires, zone d'intervention, délais, disponibilités : on part des questions que vous recevez réellement, chaque semaine.",
+      },
+      {
+        step: "02",
+        title: "On entraîne l'agent sur vos contenus",
+        body: "Documents, tarifs, procédures et FAQ deviennent sa base de connaissance. Il répond avec vos mots, pas avec des généralités.",
+      },
+      {
+        step: "03",
+        title: "On pose les garde-fous",
+        body: "Ce que l'agent peut dire, ce qu'il ne doit jamais avancer, et à quel moment il passe la main à un humain plutôt que d'improviser.",
+      },
+      {
+        step: "04",
+        title: "On intègre et on affine",
+        body: "Mise en place sur votre site ou votre messagerie, puis ajustements à partir des vraies conversations des premières semaines.",
+      },
+    ],
+    signals: [
+      "Vous répondez chaque semaine aux mêmes questions",
+      "Des demandes arrivent le soir et le week-end, sans réponse immédiate",
+      "Vous perdez des prospects parce que vous répondez trop tard",
+      "Votre formulaire de contact reçoit des demandes trop vagues",
+      "Vous passez du temps à trier des demandes hors de votre zone",
+    ],
     deliverables: [
       "Cadrage des cas d'usage et des limites de l'agent",
       "Entraînement sur vos contenus et vos procédures",
@@ -391,6 +497,15 @@ export const serviceContent: Record<
       "Tableau de bord des conversations",
       "Suivi et amélioration continue",
     ],
+    media: {
+      poster: "/services/agents-ia-hero.webp",
+      video: "/services/agents-ia-hero.mp4",
+      illustration: "/services/agents-ia-method.webp",
+      illustrationAlt:
+        "Réseau de particules lumineuses qui convergent vers un flux unique, évoquant des demandes clients triées et qualifiées.",
+      posterAlt:
+        "Constellation de points lumineux reliés par des filaments bleus, convergeant vers un flux unique.",
+    },
     faq: [
       {
         q: "Un agent IA est-il utile pour une petite entreprise ?",
@@ -405,10 +520,17 @@ export const serviceContent: Record<
   "saas-sur-mesure": {
     metaTitle: "SaaS & application métier sur-mesure — Pays de Gex",
     metaDescription:
-      "Développement d'applications métier et de logiciels SaaS sur-mesure pour les entreprises du Pays de Gex, de l'Ain et de la région de Genève, quand aucun outil du marché ne convient.",
+      "Développement d'applications métier et de logiciels SaaS sur-mesure pour les entreprises du Pays de Gex et de Genève, quand aucun outil du marché ne convient.",
     h1: "SaaS et applications métier sur-mesure",
     intro:
       "Quand les logiciels du marché ne collent pas à votre façon de travailler, une application sur-mesure devient rentable. Supaco Digital cadre, développe et héberge des outils métier et des plateformes SaaS pour les entreprises du bassin franco-suisse.",
+    tagline:
+      "Un outil taillé pour votre façon de travailler, quand aucun logiciel du marché ne colle vraiment.",
+    stats: [
+      { value: "Cadrage", label: "avant la première ligne de code" },
+      { value: "Itératif", label: "des livraisons régulières" },
+      { value: "Hébergé", label: "sauvegardes et suivi inclus" },
+    ],
     sections: [
       {
         title: "Cadrer avant de coder",
@@ -429,6 +551,35 @@ export const serviceContent: Record<
         ],
       },
     ],
+    process: [
+      {
+        step: "01",
+        title: "Atelier de cadrage",
+        body: "On part de vos processus réels, pas d'un cahier des charges théorique. On identifie ce qui doit être automatisé et ce qui doit rester manuel.",
+      },
+      {
+        step: "02",
+        title: "Maquettes et validation",
+        body: "Vous voyez l'outil avant qu'il n'existe. On ajuste les écrans avec les personnes qui s'en serviront tous les jours.",
+      },
+      {
+        step: "03",
+        title: "Développement par itérations",
+        body: "Une première version utile rapidement, puis des livraisons régulières. Vous testez au fil de l'eau plutôt qu'à la toute fin.",
+      },
+      {
+        step: "04",
+        title: "Mise en production et suivi",
+        body: "Reprise de vos données existantes, hébergement, sauvegardes et supervision. L'outil évolue ensuite avec votre activité.",
+      },
+    ],
+    signals: [
+      "Vous jonglez entre plusieurs fichiers Excel partagés",
+      "Vous ressaisissez les mêmes données dans plusieurs outils",
+      "Votre logiciel actuel vous oblige à contourner ses limites",
+      "Vous payez des licences pour des fonctions que vous n'utilisez pas",
+      "Votre façon de travailler n'entre dans aucun outil standard",
+    ],
     deliverables: [
       "Atelier de cadrage et spécifications",
       "Maquettes et validation avant développement",
@@ -437,6 +588,15 @@ export const serviceContent: Record<
       "Hébergement, sauvegardes et supervision",
       "Maintenance corrective et évolutive",
     ],
+    media: {
+      poster: "/services/saas-sur-mesure-hero.webp",
+      video: "/services/saas-sur-mesure-hero.mp4",
+      illustration: "/services/saas-sur-mesure-method.webp",
+      illustrationAlt:
+        "Blocs de verre et de métal qui s'assemblent en couches, évoquant les modules d'une application métier.",
+      posterAlt:
+        "Modules géométriques de verre translucide et de métal brossé s'assemblant en une architecture en couches.",
+    },
     faq: [
       {
         q: "À partir de quand une application sur-mesure est-elle justifiée ?",
@@ -451,10 +611,17 @@ export const serviceContent: Record<
   automatisation: {
     metaTitle: "Automatisation des tâches — Pays de Gex & Ain",
     metaDescription:
-      "Automatisation des tâches répétitives et connexion de vos outils (devis, facturation, CRM) pour les TPE et PME du Pays de Gex, de l'Ain et de la région de Genève.",
+      "Automatisation des tâches répétitives et connexion de vos outils (devis, facturation, CRM) pour les TPE et PME du Pays de Gex et de l'Ain.",
     h1: "Automatisation des tâches pour les TPE et PME",
     intro:
       "Devis recopiés, relances oubliées, données saisies deux fois : ces tâches vous coûtent des heures chaque semaine. Supaco Digital relie vos outils entre eux et automatise ce qui peut l'être, pour les entreprises du bassin franco-suisse.",
+    tagline:
+      "Vos outils reliés entre eux : une information saisie une fois se propage partout, sans copier-coller.",
+    stats: [
+      { value: "Zéro", label: "double saisie entre vos outils" },
+      { value: "Vos outils", label: "conservés, simplement connectés" },
+      { value: "Documenté", label: "vous savez ce qui tourne" },
+    ],
     sections: [
       {
         title: "Vos outils qui se parlent enfin",
@@ -475,6 +642,35 @@ export const serviceContent: Record<
         ],
       },
     ],
+    process: [
+      {
+        step: "01",
+        title: "On cartographie vos flux",
+        body: "Du premier contact à la facture : on suit le trajet réel de l'information dans votre activité et on repère les ressaisies.",
+      },
+      {
+        step: "02",
+        title: "On cible le flux le plus coûteux",
+        body: "On commence par celui qui vous fait perdre le plus de temps. Pas de refonte de tout votre système d'un coup.",
+      },
+      {
+        step: "03",
+        title: "On connecte et on automatise",
+        body: "Site, formulaires, CRM, facturation, agenda : les briques se parlent, les relances et alertes se déclenchent seules.",
+      },
+      {
+        step: "04",
+        title: "On documente et on étend",
+        body: "Chaque automatisation est documentée pour rester compréhensible. On mesure le gain, puis on étend au flux suivant.",
+      },
+    ],
+    signals: [
+      "Vous recopiez un devis pour en faire une facture",
+      "Une même information est saisie dans deux ou trois outils",
+      "Des relances de devis ou de factures passent à la trappe",
+      "Vous consolidez vos chiffres à la main chaque mois",
+      "Vos outils fonctionnent bien, mais chacun dans son coin",
+    ],
     deliverables: [
       "Cartographie de vos flux et points de friction",
       "Connexion de vos outils (devis, facturation, CRM, agenda)",
@@ -483,6 +679,15 @@ export const serviceContent: Record<
       "Documentation des automatisations mises en place",
       "Ajustements après mise en production",
     ],
+    media: {
+      poster: "/services/automatisation-hero.webp",
+      video: "/services/automatisation-hero.mp4",
+      illustration: "/services/automatisation-method.webp",
+      illustrationAlt:
+        "Flux de lumière bleue circulant dans des conduits et des mécanismes, évoquant des outils connectés entre eux.",
+      posterAlt:
+        "Rubans de lumière cyan et bleue circulant dans des conduits de verre sombre et des formes mécaniques.",
+    },
     faq: [
       {
         q: "Faut-il changer de logiciels pour automatiser ?",
@@ -634,7 +839,7 @@ export const projects = [
     sector: "Broderie personnalisée",
     projectType: "Site e-commerce",
     area: "Suisse",
-    url: "https://au-point-compte.ch/",
+    url: "https://broderie.ch/",
     image: "/portfolio/au-point-compte.webp",
     year: "2025",
     summary:
@@ -680,6 +885,60 @@ export const projects = [
     result:
       "Une vitrine qui pose d'emblée le professionnalisme du cabinet et ouvre la conversation avec de nouveaux clients.",
   },
+  {
+    slug: "proux",
+    name: "PROUX",
+    sector: "Couverture & nettoyage extérieur",
+    projectType: "Site vitrine",
+    area: "Pays de Gex",
+    url: "https://www.proux-couverture.fr/",
+    image: "/portfolio/proux.webp",
+    year: "2026",
+    summary:
+      "Une vitrine qui montre le résultat avant/après et transforme la visite en demande de devis.",
+    context:
+      "PROUX est une entreprise familiale du Pays de Gex, de père en fils depuis plus de vingt ans, spécialisée dans le nettoyage et la rénovation de toitures, façades et terrasses, ainsi que la peinture extérieure.",
+    challenge:
+      "Rendre visible un savoir-faire qui se juge au résultat, couvrir des prestations variées (démoussage, hydrofuge, couverture, façades, peinture) sans perdre le visiteur, et capter les recherches locales sur les communes desservies.",
+    solution:
+      "Site vitrine avec une page dédiée par prestation, une galerie avant/après qui fait la démonstration du travail, l'explication de la méthode d'intervention, une FAQ qui lève les objections courantes et un formulaire de devis gratuit accessible partout.",
+    deliverables: [
+      "Pages dédiées par prestation (toiture, façades, peinture)",
+      "Galerie avant/après des chantiers réalisés",
+      "Méthode d'intervention et FAQ",
+      "SEO local sur les communes de l'Ain et du Pays de Gex",
+      "Formulaire de demande de devis gratuit",
+    ],
+    result:
+      "Un site qui prouve le savoir-faire par l'image et donne aux particuliers du secteur un chemin direct vers le devis.",
+  },
+  {
+    slug: "sabai",
+    name: "Le Sabaï",
+    sector: "Cuisine asiatique",
+    projectType: "Site de commande en ligne",
+    area: "Pays de Gex",
+    url: "https://sabai-thoiry.com/",
+    image: "/portfolio/sabai.webp",
+    year: "2026",
+    summary:
+      "Une carte qui se commande en ligne 24h/24, sans commission sur les paniers.",
+    context:
+      "Le Sabaï est un restaurant de cuisine asiatique à Thoiry. Sa carte est large — sushis, makis, bowls, banh mi, desserts — et la prise de commande reposait sur le téléphone et des plateformes tierces qui prélèvent une commission.",
+    challenge:
+      "Rendre une carte très fournie lisible sans noyer le client, permettre de commander à toute heure même quand le restaurant est fermé, et couvrir deux zones de livraison aux règles différentes.",
+    solution:
+      "Site de commande en propre, catalogue organisé par catégories avec photos, disponibilité des produits en temps réel (les ruptures sont signalées), panier et statut d'ouverture affichés en continu, conditions de livraison explicites selon la zone et le service.",
+    deliverables: [
+      "Catalogue complet par catégories, avec photos",
+      "Commande en ligne accessible 24h/24",
+      "Gestion des ruptures de stock en temps réel",
+      "Zones et conditions de livraison (Thoiry le midi, Pays de Gex le soir)",
+      "Parcours de commande pensé mobile-first",
+    ],
+    result:
+      "Un canal de commande qui appartient au restaurant, ouvert en permanence, et une carte mise en valeur par l'image.",
+  },
 ] as const;
 
 export type Project = (typeof projects)[number];
@@ -688,3 +947,48 @@ export type Project = (typeof projects)[number];
 export function getProject(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }
+
+/**
+ * Avis clients — extraits de la fiche Google Business Profile de Supaco
+ * Digital. `relativeDate` reprend le libellé affiché par Google ("il y a X
+ * mois") plutôt qu'une date absolue, pour rester fidèle à la source.
+ * Alimente la section témoignages de l'accueil + le JSON-LD Review /
+ * AggregateRating (cf. §9 du CLAUDE.md).
+ */
+export const testimonials = [
+  {
+    author: "Thomas Soler",
+    reviewCount: 11,
+    rating: 5,
+    relativeDate: "il y a 4 jours",
+    text: "Supaco Digital s'est occupé de la création de mon site web Bushidogym.fr. Avant de faire appel à lui, j'avais échangé avec plusieurs webmasters, mais c'est la première fois que quelqu'un réussit à comprendre exactement ce que je voulais et à le retranscrire aussi bien. Très à l'écoute, réactif et professionnel. Je suis vraiment satisfait du résultat et je recommande Supaco Digital sans hésiter !",
+  },
+  {
+    author: "Rootiweb",
+    reviewCount: 1,
+    rating: 5,
+    relativeDate: "il y a 5 mois",
+    text: "Bonne collaboration avec cette agence pour la création de mon site vitrine et la mise en place de mon CRM. Équipe professionnelle, réactive et à l'écoute. Le travail a été réalisé sérieusement. Je recommande.",
+  },
+  {
+    author: "Melissa",
+    reviewCount: 5,
+    rating: 5,
+    relativeDate: "il y a 6 mois",
+    text: "Je suis ravie de la collaboration avec Supaco Digital pour la création de mon site internet. Tout a été réalisé dans le respect de mes attentes, avec une grande écoute et beaucoup de patience. Les modifications et ajustements demandés ont été pris en compte rapidement.",
+  },
+  {
+    author: "Gémeaux",
+    reviewCount: 1,
+    rating: 5,
+    relativeDate: "il y a 9 mois",
+    text: "Professionnel, disponible et réactif. Les prestations sont de qualités. Je recommande !",
+  },
+  {
+    author: "Capital gestion",
+    reviewCount: 7,
+    rating: 5,
+    relativeDate: "il y a 11 mois",
+    text: "Très professionnel, rapide et rigoureux. Après un première échange, il a tout de suite compris notre projet et a su nous accompagner sur la création de notre boutique en ligne avec beaucoup de créativité !",
+  },
+] as const;

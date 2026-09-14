@@ -60,7 +60,9 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: clamp(1.5rem, 3vw, 2rem);
+  /* pas de padding ici : le visuel va à fond perdu, le texte a le sien */
+  padding: 0 0 clamp(1.5rem, 3vw, 2rem);
+  overflow: clip;
   border-radius: var(--radius-lg);
   background: var(--bg-glass);
   border: 1px solid var(--border-soft);
@@ -95,20 +97,56 @@
   outline-offset: 3px;
 }
 
+/* --- Visuel de carte (généré, thème dark) --- */
+.cardMedia {
+  position: relative;
+  display: block;
+  margin-bottom: clamp(1.1rem, 2.5vw, 1.5rem);
+}
+
+.cardImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+  /* le visuel est cadré à droite : on privilégie ce côté au recadrage */
+  object-position: 70% 50%;
+}
+
+/* dégradé de raccord : le bas du visuel fond dans le corps de la carte */
+.cardMedia::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(180deg, rgba(18, 24, 41, 0) 0%, rgba(18, 24, 41, 0.85) 100%);
+  pointer-events: none;
+}
+
 .cardIcon {
+  position: absolute;
+  left: clamp(1.5rem, 3vw, 2rem);
+  bottom: -20px;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border-radius: 14px;
   color: var(--brand-cyan);
-  background: var(--brand-gradient-soft);
-  box-shadow: inset 0 0 0 1px var(--border-hairline);
+  /* opaque : le visuel ne doit pas transparaître derrière l'icône */
+  background: #131a2c;
+  box-shadow:
+    inset 0 0 0 1px rgba(53, 167, 240, 0.32),
+    0 8px 20px -8px rgba(0, 0, 0, 0.7);
 }
 
 .cardTitle {
-  margin-top: 1.35rem;
+  /* + la place laissée par l'icône en débord */
+  margin-top: 1.5rem;
+  padding-inline: clamp(1.5rem, 3vw, 2rem);
   font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: -0.015em;
@@ -117,6 +155,7 @@
 
 .cardText {
   margin-top: 0.6rem;
+  padding-inline: clamp(1.5rem, 3vw, 2rem);
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--text-secondary);
@@ -126,7 +165,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 1.35rem;
+  margin-top: auto;
+  padding-top: 1.35rem;
+  padding-inline: clamp(1.5rem, 3vw, 2rem);
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-primary);

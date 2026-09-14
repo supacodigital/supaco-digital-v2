@@ -1,16 +1,207 @@
-/* Page /services/[slug] — contenu long, thème sombre global. */
-.wrap {
-  padding-top: clamp(1.5rem, 5vw, 3rem);
-  padding-bottom: var(--space-section);
+/*
+ * Page /services/[slug] — alternance de bandes claires et sombres pour
+ * rythmer le scroll (même grammaire que l'accueil), après un hero plein
+ * format. Le hero vit dans son propre composant (ServiceHero).
+ *
+ * Palette locale `--s-*` des bandes claires : identique à Services / FAQ /
+ * Avis de l'accueil, pour que l'ensemble du site reste cohérent.
+ */
+
+/* ============ Bande 1 : intro + « c'est pour vous si… » (sombre) ============ */
+.intro {
+  position: relative;
+  padding-block: clamp(3rem, 7vw, 4.5rem);
+  background: var(--bg-800);
 }
 
-.article {
-  max-width: 46rem;
-  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+.introInner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 3rem);
+  align-items: start;
 }
 
-/* --- En-tête --- */
-.eyebrow {
+@media (min-width: 900px) {
+  .introInner {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+}
+
+.introLede {
+  font-size: clamp(1.05rem, 1.7vw, 1.22rem);
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* carte « est-ce pour moi ? » : auto-diagnostic du visiteur */
+.signals {
+  padding: clamp(1.35rem, 3vw, 1.85rem);
+  border-radius: var(--radius-lg);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-glass);
+}
+
+.signalsTitle {
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.signalsList {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.signal {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* coche dessinée en CSS : pas d'icône à charger */
+.signalTick {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.2rem;
+  border-radius: 50%;
+  background: var(--brand-gradient-soft);
+  box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.35);
+}
+
+.signalTick::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--brand-cyan);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+/* ============ Bande 2 : contenu long (claire) ============ */
+.content {
+  --s-bg: #f6f8fc;
+  --s-ink: #011a42;
+  --s-ink-soft: #3a4a6b;
+  --s-border: #e6ebf5;
+
+  padding-block: var(--space-section);
+  background-color: var(--s-bg);
+  color: var(--s-ink-soft);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.25rem, 5vw, 3.25rem);
+}
+
+/* titre à gauche, corps à droite : casse le bloc de texte pleine largeur */
+.section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+  padding-top: clamp(1.75rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--s-border);
+}
+
+.section:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (min-width: 860px) {
+  .section {
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(2rem, 5vw, 3.5rem);
+  }
+}
+
+.sectionTitle {
+  font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--s-ink);
+  text-wrap: balance;
+}
+
+.sectionBodyWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 62ch;
+}
+
+.sectionBody {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--s-ink-soft);
+}
+
+/* ============ Bande 3 : méthode (sombre, visuel + étapes) ============ */
+.method {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: var(--space-section);
+  background:
+    radial-gradient(
+      120% 90% at 12% 0%,
+      rgba(53, 167, 240, 0.12) 0%,
+      rgba(53, 167, 240, 0) 60%
+    ),
+    var(--bg-800);
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+.methodInner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .methodInner {
+    grid-template-columns: 0.88fr 1.12fr;
+  }
+}
+
+.methodMedia {
+  position: relative;
+  /* liseré dégradé peint par le padding : la carte opaque laisse un filet d'1px */
+  padding: 1px;
+  border-radius: calc(var(--radius-lg) + 1px);
+  background: linear-gradient(
+    150deg,
+    rgba(53, 167, 240, 0.55) 0%,
+    rgba(37, 99, 235, 0.2) 40%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  box-shadow: var(--shadow-lift);
+}
+
+.methodImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+.methodEyebrow {
   display: inline-block;
   font-size: 0.78rem;
   font-weight: 600;
@@ -22,139 +213,191 @@
   color: transparent;
 }
 
-.title {
+.methodTitle {
   margin-top: 0.85rem;
-  font-size: clamp(2rem, 4.5vw, 2.9rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.2rem);
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
-.intro {
-  margin-top: 1.15rem;
-  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+.steps {
+  margin-top: clamp(1.75rem, 4vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  list-style: none;
+  counter-reset: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.step:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand-cyan);
+  background: var(--brand-gradient-soft);
+  box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.3);
+}
+
+.stepBody {
+  min-width: 0;
+}
+
+.stepTitle {
+  font-size: 1.04rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.stepText {
+  margin-top: 0.45rem;
+  font-size: 0.96rem;
   line-height: 1.7;
   color: var(--text-secondary);
 }
 
-.headActions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.75rem;
-}
-
-.secondaryLink {
-  font-size: 0.95rem;
+/* ============ Titre commun des blocs suivants ============ */
+.blockTitle {
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 600;
-  color: var(--text-primary);
-  border-bottom: 1px solid var(--border-strong);
-  padding-bottom: 2px;
-  transition: border-color 160ms var(--ease-out);
-}
-
-.secondaryLink:hover {
-  border-color: var(--brand-cyan);
-}
-
-/* --- Sections de contenu --- */
-.sections {
-  margin-top: clamp(2.5rem, 6vw, 3.5rem);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(2rem, 4vw, 2.75rem);
-}
-
-.sectionTitle {
-  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
-.sectionBody {
-  margin-top: 0.9rem;
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-}
-
-.sectionBody + .sectionBody {
-  margin-top: 0.7rem;
-}
-
-/* --- Livrables --- */
+/* ============ Bande 4 : livrables (sombre) ============ */
 .deliverables {
-  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  padding-block: clamp(3rem, 7vw, 4.5rem);
+  background: var(--bg-900);
 }
 
 .deliverablesList {
-  margin-top: 1.1rem;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.7rem;
+  grid-template-columns: 1fr;
+  gap: 0.9rem 2rem;
 }
 
-.deliverablesList li {
-  position: relative;
-  padding-left: 1.75rem;
-  font-size: 0.98rem;
-  line-height: 1.6;
+@media (min-width: 720px) {
+  .deliverablesList {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.deliverable {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-hairline);
+  font-size: 0.96rem;
+  line-height: 1.55;
   color: var(--text-secondary);
 }
 
-.deliverablesList li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 8px;
-  height: 8px;
+.deliverableTick {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.15rem;
   border-radius: 50%;
-  background: var(--brand-cyan);
+  background: var(--brand-gradient-soft);
+  box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.35);
 }
 
-/* --- FAQ --- */
+.deliverableTick::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--brand-cyan);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+/* ============ Bande 5 : FAQ (sombre) ============ */
 .faq {
-  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  padding-block: clamp(3rem, 7vw, 4.5rem);
+  background: var(--bg-800);
+}
+
+.faqInner {
+  max-width: 52rem;
 }
 
 .faqList {
-  margin-top: 1.1rem;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.4rem;
 }
 
-.faqItem dt {
-  font-size: 1.02rem;
+.faqItem {
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.faqItem:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.faqQuestion {
+  font-size: 1.04rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.faqItem dd {
-  margin-top: 0.45rem;
-  font-size: 0.97rem;
+.faqAnswer {
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
   line-height: 1.7;
   color: var(--text-secondary);
 }
 
-/* --- Zone d'intervention --- */
+/* ============ Bande 6 : zone d'intervention (sombre) ============ */
 .areas {
-  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  padding-block: clamp(3rem, 7vw, 4.5rem);
+  background: var(--bg-900);
 }
 
 .areasLede {
   margin-top: 0.9rem;
-  font-size: 0.97rem;
+  font-size: 0.98rem;
   line-height: 1.6;
   color: var(--text-muted);
 }
 
 .areasGrid {
-  margin-top: 1.25rem;
+  margin-top: clamp(1.25rem, 3vw, 1.75rem);
   padding: 0;
   list-style: none;
   display: grid;
@@ -162,67 +405,120 @@
   gap: 1rem;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 640px) {
   .areasGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 .areaZone {
-  padding: 1rem 1.1rem;
+  padding: 1.1rem 1.25rem;
   border-radius: var(--radius-md);
   background: var(--bg-glass);
   border: 1px solid var(--border-soft);
 }
 
 .areaZoneName {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .areaZoneCities {
   margin-top: 0.4rem;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   line-height: 1.55;
   color: var(--text-muted);
 }
 
-/* --- Autres services --- */
+/* ============ Bande 7 : autres services (sombre) ============ */
 .related {
-  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  padding-block: clamp(3rem, 7vw, 4.5rem);
+  background: var(--bg-800);
 }
 
-.relatedList {
-  margin-top: 1rem;
+.relatedGrid {
+  margin-top: clamp(1.5rem, 3vw, 2rem);
   padding: 0;
   list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 760px) {
+  .relatedGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.relatedCard {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  height: 100%;
+  overflow: clip;
+  border-radius: var(--radius-lg);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-soft);
+  transition:
+    border-color 180ms ease,
+    transform 180ms var(--ease-out);
 }
 
-.relatedList a {
-  font-size: 0.98rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  border-bottom: 1px solid transparent;
-  transition: color 160ms var(--ease-out);
+@media (hover: hover) and (pointer: fine) {
+  .relatedCard:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+  }
 }
 
-.relatedList a:hover {
-  color: var(--brand-cyan);
+.relatedCard:active {
+  transform: scale(0.99);
+  transition-duration: 100ms;
 }
 
-/* --- CTA --- */
+.relatedImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+}
+
+.relatedBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem 1.35rem;
+}
+
+.relatedTitle {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.relatedText {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* ============ Bande 8 : CTA final (sombre) ============ */
+.ctaSection {
+  padding-block: clamp(3rem, 7vw, 4.5rem) var(--space-section);
+  background: var(--bg-900);
+}
+
 .cta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-top: clamp(3rem, 7vw, 4.5rem);
-  padding: clamp(1.75rem, 4vw, 2.5rem);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
   border-radius: var(--radius-lg);
   background: var(--brand-gradient-soft);
   border: 1px solid var(--border-soft);
@@ -243,12 +539,15 @@
   font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--text-primary);
-  max-width: 28ch;
+  max-width: 30ch;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .secondaryLink,
-  .relatedList a {
-    transition: none;
+  .relatedCard {
+    transition-property: border-color;
+  }
+  .relatedCard:hover,
+  .relatedCard:active {
+    transform: none;
   }
 }

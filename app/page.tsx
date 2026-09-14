@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
 import { Realisations } from "@/components/sections/Realisations";
-import { Faq } from "@/components/sections/Faq";
+import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Marquee } from "@/components/ui/Marquee";
 import { HomeStructuredData } from "@/components/seo/HomeStructuredData";
@@ -30,7 +30,8 @@ export const metadata: Metadata = {
 /**
  * Page d'accueil — scroll unique.
  * Sections : héro, bandeau zone d'intervention, services, réalisations, FAQ,
- * contact. Le bloc offres viendra s'insérer entre services et réalisations.
+ * avis clients, contact. Le bloc offres viendra s'insérer entre services et
+ * réalisations.
  */
 export default function HomePage() {
   return (
@@ -40,7 +41,7 @@ export default function HomePage() {
       <Marquee items={site.serviceArea} label="Zone d'intervention" />
       <Services />
       <Realisations />
-      <Faq />
+      <Testimonials />
       <Contact />
     </>
   );

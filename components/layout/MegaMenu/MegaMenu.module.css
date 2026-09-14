@@ -8,49 +8,11 @@
   border-bottom: 1px solid var(--border-soft);
   /* fond opaque : le contenu de la page ne doit jamais transparaître */
   background-color: #0a0e1a;
-  background-image:
-    radial-gradient(
-      70rem 30rem at 20% -40%,
-      rgba(53, 167, 240, 0.12),
-      transparent 60%
-    ),
-    linear-gradient(180deg, #0c1120 0%, #080b14 100%);
-  box-shadow: 0 40px 80px -28px rgba(0, 0, 0, 0.7);
-}
-
-.inner {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding-block: 1.5rem 1.75rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.allLink {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.35rem 0.15rem;
-  font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  transition:
-    color 140ms var(--ease-out),
-    gap 160ms var(--ease-out);
-}
-
-.allLink:hover {
-  color: var(--text-primary);
-  gap: 0.7rem;
 }
 
 /* --- Sous le breakpoint desktop, le mega-menu n'est pas utilisé --- */

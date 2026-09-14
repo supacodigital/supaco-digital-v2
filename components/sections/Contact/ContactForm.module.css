@@ -1,28 +1,127 @@
 /*
- * Formulaire de contact — champs en verre sur le thème sombre.
- * Transitions ciblées (jamais `all`), focus clavier visible, `:active` sur le
- * bouton géré par le composant Button. `prefers-reduced-motion` en fin de
- * fichier neutralise les transformations.
+ * Formulaire de contact en trois étapes — champs en verre sur le thème sombre.
+ * Transitions ciblées (jamais `all`), focus clavier visible ; le mouvement des
+ * étapes est porté par Framer Motion côté JS (springs interruptibles), le CSS
+ * ne gère que les changements d'état (hover, focus, sélection).
  */
+
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.15rem;
+  gap: 1.4rem;
 }
 
-.formTitle {
-  font-size: 0.8rem;
+/* --- Progression --- */
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  list-style: none;
+}
+
+.stepChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
   color: var(--text-muted);
+  transition: color 220ms ease;
+}
+
+.stepChip[data-state="current"] {
+  color: var(--text-primary);
+}
+
+.stepChip[data-state="done"] {
+  color: var(--text-secondary);
+}
+
+.stepIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  border: 1px solid var(--border-soft);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease;
+}
+
+.stepChip[data-state="current"] .stepIndex {
+  border-color: transparent;
+  background: var(--brand-gradient);
+  color: #fff;
+}
+
+.stepChip[data-state="done"] .stepIndex {
+  border-color: rgba(53, 167, 240, 0.4);
+  color: var(--brand-cyan);
+}
+
+/* barre de progression : `scaleX` animé (GPU) plutôt qu'une largeur */
+.bar {
+  position: relative;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--border-hairline);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: var(--brand-gradient);
+}
+
+.hint {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* --- Scène des étapes ---
+   Hauteur minimale réservée : le pied de formulaire ne saute pas d'une étape
+   à l'autre, et `popLayout` (Framer Motion) sort l'étape quittante du flux. */
+.stage {
+  position: relative;
+  display: grid;
+  /* calé sur l'étape la plus haute (le textarea) : le pied de formulaire ne
+     saute pas d'une étape à l'autre */
+  min-height: 13.5rem;
+}
+
+.panel {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
 }
 
 /* deux champs côte à côte au-delà de 560px */
 .row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.15rem;
+  gap: 1.1rem;
 }
 
 @media (min-width: 560px) {
@@ -58,11 +157,23 @@
   color: var(--text-muted);
 }
 
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* --- Champs texte --- */
 .input,
 .textarea {
   width: 100%;
-  padding: 0.7rem 0.85rem;
+  padding: 0.75rem 0.9rem;
   border-radius: var(--radius-sm);
   background: rgba(8, 11, 20, 0.55);
   border: 1px solid var(--border-soft);
@@ -79,7 +190,8 @@
 
 .textarea {
   resize: vertical;
-  min-height: 7.5rem;
+  /* + le label et son interligne = la hauteur de `.stage` */
+  min-height: 11rem;
 }
 
 .input::placeholder,
@@ -110,58 +222,87 @@
   box-shadow: 0 0 0 3px rgba(240, 112, 138, 0.2);
 }
 
-/* --- Choix type de projet : pilules radio --- */
+/* --- Étape 1 : choix du type de projet, en cartes --- */
 .choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  display: grid;
+  gap: 0.7rem;
 }
 
 .choice {
   position: relative;
-  display: inline-flex;
+  display: block;
 }
 
 /* input radio visuellement masqué mais focusable */
 .choiceInput {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   margin: 0;
   cursor: pointer;
 }
 
-.choiceLabel {
-  display: inline-flex;
+.choiceBody {
+  display: flex;
   align-items: center;
-  padding: 0.5rem 0.95rem;
-  border-radius: var(--radius-pill);
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-soft);
   background: rgba(8, 11, 20, 0.4);
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
   transition:
     border-color 160ms ease,
     background-color 160ms ease,
-    color 160ms ease;
+    color 160ms ease,
+    transform 140ms var(--ease-out);
+}
+
+.choiceLabel {
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+/* pastille de validation : présente dès le départ (scale 0.6, pas 0) pour que
+   l'apparition ait une origine visible */
+.choiceCheck {
+  display: inline-flex;
+  color: var(--brand-cyan);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .choice:hover .choiceLabel {
+  .choice:hover .choiceBody {
     border-color: var(--border-strong);
     color: var(--text-primary);
   }
 }
 
-.choiceInput:checked + .choiceLabel {
+.choiceInput:active + .choiceBody {
+  transform: scale(0.985);
+  transition-duration: 100ms;
+}
+
+.choiceInput:checked + .choiceBody {
   border-color: transparent;
   background: var(--brand-gradient-soft);
   color: var(--text-primary);
   box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.5);
 }
 
-.choiceInput:focus-visible + .choiceLabel {
+.choiceInput:checked + .choiceBody .choiceCheck {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.choiceInput:focus-visible + .choiceBody {
   outline: 2px solid var(--brand-cyan);
   outline-offset: 2px;
 }
@@ -200,12 +341,88 @@
   overflow: hidden;
 }
 
-/* --- Zone d'envoi --- */
-.submit {
+/* --- Pied : navigation --- */
+.actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.actions > :global(button[type="submit"]) {
+  margin-left: auto;
+}
+
+/* mobile : le CTA prend toute la largeur sous le lien « Retour » — le
+   parallélogramme a alors la place d'afficher son libellé et son icône */
+@media (max-width: 559px) {
+  .actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .actions > :global(button[type="submit"]) {
+    display: flex;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .back,
+  .stepCount {
+    align-self: center;
+  }
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition:
+    color 160ms ease,
+    transform 140ms var(--ease-out);
+}
+
+.back:hover {
+  color: var(--text-primary);
+}
+
+.back:active {
+  transform: scale(0.97);
+  transition-duration: 100ms;
+}
+
+.back:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+}
+
+.stepCount {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* Le `.label` du Button porte `margin-right: -0.18em` pour compenser le
+   letter-spacing des capitales — compensation pensée pour du texte seul. Avec
+   une icône en fin de ligne, elle la tire dans le coin rogné par le clip-path :
+   on la ramène donc vers l'intérieur. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-right: 0.18em;
+}
+
+.cta svg {
+  flex-shrink: 0;
 }
 
 .consent {
@@ -220,15 +437,23 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  padding: 0.5rem 0;
+  padding: 1rem 0;
 }
 
 .doneIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
   color: var(--brand-cyan);
+  background: var(--brand-gradient-soft);
+  box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.4);
 }
 
 .doneTitle {
-  margin-top: 0.35rem;
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-size: 1.35rem;
   font-weight: 600;
@@ -265,8 +490,15 @@
 @media (prefers-reduced-motion: reduce) {
   .input,
   .textarea,
-  .choiceLabel,
-  .doneReset {
-    transition: none;
+  .choiceBody,
+  .choiceCheck,
+  .doneReset,
+  .back {
+    transition-property: color, background-color, border-color, box-shadow,
+      opacity;
+  }
+  .choiceInput:active + .choiceBody,
+  .back:active {
+    transform: none;
   }
 }

@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
-import { SmoothScroll } from "@/lib/SmoothScroll";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { seoKeywords, serviceAreas, site } from "@/lib/site";
@@ -129,13 +128,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#contenu" className="skip-link">
           Passer au contenu
         </a>
-        <SmoothScroll>
-          <Header />
-          <main id="contenu" tabIndex={-1}>
-            {children}
-          </main>
-          <Footer />
-        </SmoothScroll>
+        <Header />
+        <main id="contenu" tabIndex={-1}>
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

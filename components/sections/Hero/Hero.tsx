@@ -2,65 +2,48 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Sparkle } from "@phosphor-icons/react";
+import { Star, ArrowRight } from "@phosphor-icons/react";
 import { Container } from "@/components/ui/Container";
-import { SupacoMark } from "@/components/ui/SupacoMark";
 import { Button } from "@/components/ui/Button";
-import heroImage from "@/public/hero/mont-blanc.webp";
+import { testimonials } from "@/lib/site";
+import { HeroBackdrop } from "./HeroBackdrop";
+import { GoogleLogo } from "./GoogleLogo";
 import styles from "./Hero.module.css";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// note moyenne réelle, calculée depuis les avis Google (pas une valeur en dur)
+const averageRating =
+  testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length;
+const ratingLabel = averageRating.toFixed(1).replace(".", ",");
 
 /**
  * Section héro de la page d'accueil.
- * - photo de fond (Mont-Blanc, vu du Pays de Gex) sous un voile dégradé sombre
- *   fort : le contenu texte blanc reste lisible (contraste WCAG).
- * - le contenu (h1, sous-titre, CTA) est dans le HTML dès le premier rendu ;
- *   GSAP ne fait que révéler des éléments déjà indexables + un léger parallaxe.
+ * Composition alignée à gauche : le titre porte le SEO local, la note Google
+ * réelle est visible dès le premier écran.
+ * Le fond est entièrement CSS (cf. HeroBackdrop) — aucune image ni vidéo à
+ * charger, le LCP est porté par le texte.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      // révélation d'entrée : ease-out fort, courte, décalage léger
-      const targets = gsap.utils.toArray<HTMLElement>(`.${styles.reveal}`);
+      // révélation d'entrée — le contenu est déjà dans le HTML (indexable),
+      // GSAP ne fait que l'animer
       gsap.fromTo(
-        targets,
-        { opacity: 0, y: 18 },
+        gsap.utils.toArray<HTMLElement>(`.${styles.reveal}`),
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
+          duration: 0.6,
           ease: "power3.out",
-          stagger: 0.08,
-          delay: 0.05,
+          stagger: 0.07,
         },
       );
-
-      // léger parallaxe : la photo remonte plus lentement que le contenu.
-      // scrub linéaire, amplitude discrète (l'image déborde en bas via CSS).
-      if (imageRef.current) {
-        gsap.to(imageRef.current, {
-          yPercent: 14,
-          ease: "none",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
     },
     { scope: root },
   );
@@ -71,30 +54,9 @@ export function Hero() {
       ref={root}
       aria-labelledby="hero-title"
     >
-      {/* fond : photo + voile dégradé + ghost mark, purement décoratif */}
-      <div className={styles.backdrop} aria-hidden="true">
-        <div className={styles.imageWrap} ref={imageRef}>
-          <Image
-            src={heroImage}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            quality={82}
-            placeholder="blur"
-            className={styles.image}
-          />
-        </div>
-        <div className={styles.veil} />
-        <SupacoMark variant="mono" className={styles.ghostMark} />
-      </div>
+      <HeroBackdrop />
 
       <Container as="div" className={styles.inner}>
-        <p className={`${styles.eyebrow} ${styles.reveal}`}>
-          <Sparkle size={15} weight="fill" aria-hidden="true" />
-          Agence web · Pays de Gex · bassin franco-suisse
-        </p>
-
         <h1 id="hero-title" className={`${styles.title} ${styles.reveal}`}>
           Agence web dans le Pays de Gex&nbsp;:{" "}
           <span className={styles.accent}>
@@ -103,10 +65,9 @@ export function Hero() {
         </h1>
 
         <p className={`${styles.lede} ${styles.reveal}`}>
-          Supaco Digital crée des sites internet, boutiques en ligne, agents IA
-          et automatisations pour les TPE, PME et artisans du Pays de Gex, de
-          l&apos;Ain et de la région de Genève — de Saint-Genis-Pouilly à
-          Ferney-Voltaire, Gex et Divonne-les-Bains.
+          Sites internet, agents IA et automatisations pour les TPE, PME et
+          artisans du bassin franco-suisse. Un interlocuteur unique, du devis à
+          la mise en ligne.
         </p>
 
         <div className={`${styles.actions} ${styles.reveal}`}>
@@ -115,7 +76,23 @@ export function Hero() {
           </Button>
           <Link href="/#portfolio" className={styles.secondary}>
             Voir les réalisations
+            <ArrowRight size={15} weight="bold" aria-hidden="true" />
           </Link>
+        </div>
+
+        {/* Preuve sociale — note Google réelle */}
+        <div className={`${styles.proof} ${styles.reveal}`}>
+          <p className={styles.rating}>
+            <span className={styles.stars} aria-hidden="true">
+              {Array.from({ length: 5 }, (_, i) => (
+                <Star key={i} size={14} weight="fill" />
+              ))}
+            </span>
+            <span className={styles.ratingText}>
+              <strong>{ratingLabel}</strong> sur
+              <GoogleLogo height={15} />
+            </span>
+          </p>
         </div>
       </Container>
     </section>

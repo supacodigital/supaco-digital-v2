@@ -2,8 +2,7 @@ import type { MetadataRoute } from "next";
 import { site, services, projects } from "@/lib/site";
 
 /**
- * Sitemap généré nativement. On n'y liste que des URLs qui existent
- * réellement : `/tarifs` et `/blog` seront ajoutés à la création des pages.
+ * Sitemap généré nativement. On n'y liste que des URLs qui existent réellement.
  * Pas de page /portfolio (index) : les réalisations vivent dans une section
  * de l'accueil, mais chaque étude de cas a sa page dédiée /portfolio/[slug].
  */

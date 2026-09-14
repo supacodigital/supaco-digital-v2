@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { Service } from "@/lib/site";
@@ -5,11 +6,18 @@ import { ServiceMotif } from "./ServiceMotif";
 import styles from "./ServiceCard.module.css";
 
 /**
- * Carte de service du mega-menu : fond dégradé (placeholder d'image) + motif
- * SVG discret, titre du service centré verticalement et horizontalement.
- * Le résumé apparaît sous le titre au survol.
+ * Carte de service du mega-menu : photo de fond (dégradé en secours pendant
+ * le chargement) + motif SVG en filigrane, titre ancré en bas-gauche façon
+ * éditoriale (numéro de pilier + titre). Le résumé apparaît sous le titre
+ * au survol.
  */
-export function ServiceCard({ service }: { service: Service }) {
+export function ServiceCard({
+  service,
+  index,
+}: {
+  service: Service;
+  index: number;
+}) {
   const bgStyle = {
     "--card-from": service.bg.from,
     "--card-via": service.bg.via,
@@ -23,12 +31,22 @@ export function ServiceCard({ service }: { service: Service }) {
       className={styles.card}
       style={bgStyle}
     >
+      <Image
+        src={service.image}
+        alt=""
+        fill
+        sizes="(max-width: 900px) 100vw, 25vw"
+        className={styles.photo}
+      />
       <span className={styles.motif} aria-hidden="true">
         <ServiceMotif kind={service.motif} />
       </span>
       <span className={styles.veil} aria-hidden="true" />
 
-      <span className={styles.center}>
+      <span className={styles.content}>
+        <span className={styles.index} aria-hidden="true">
+          {String(index + 1).padStart(2, "0")}
+        </span>
         <span className={styles.title}>{service.title}</span>
         <span className={styles.summary}>{service.summary}</span>
       </span>

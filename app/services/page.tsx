@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Browser,
   ChatCircleDots,
@@ -64,8 +65,18 @@ export default function ServicesPage() {
                 href={`/services/${service.slug}`}
                 className={styles.cardLink}
               >
-                <span className={styles.cardIcon} aria-hidden="true">
-                  <IconEl size={24} weight="duotone" />
+                <span className={styles.cardMedia}>
+                  <Image
+                    src={content.media.poster}
+                    alt=""
+                    width={1600}
+                    height={686}
+                    sizes="(max-width: 640px) 100vw, 46vw"
+                    className={styles.cardImage}
+                  />
+                  <span className={styles.cardIcon} aria-hidden="true">
+                    <IconEl size={22} weight="duotone" />
+                  </span>
                 </span>
                 <h2 className={styles.cardTitle}>{content.h1}</h2>
                 <p className={styles.cardText}>{service.blurb}</p>
