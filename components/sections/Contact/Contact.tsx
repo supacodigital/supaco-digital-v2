@@ -4,14 +4,13 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  ArrowUpRight,
-  CalendarBlank,
-  EnvelopeSimple,
-  MapPin,
-  Phone,
-} from "@phosphor-icons/react";
+import { ArrowUpRight, EnvelopeSimple, Phone } from "@phosphor-icons/react";
 import { Container } from "@/components/ui/Container";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+} from "@/components/layout/Footer/social-icons";
 import { site } from "@/lib/site";
 import { ContactBackdrop } from "./ContactBackdrop";
 import { ContactForm } from "./ContactForm";
@@ -20,6 +19,15 @@ import styles from "./Contact.module.css";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+// id de dégradé propre à cette section : le footer rend aussi l'icône Instagram
+const IG_GRADIENT_ID = "supaco-ig-gradient-contact";
+
+const socialIcons = {
+  instagram: () => <InstagramIcon size={18} gradientId={IG_GRADIENT_ID} />,
+  facebook: () => <FacebookIcon size={18} />,
+  linkedin: () => <LinkedinIcon size={18} />,
+} as const;
 
 /** Les trois engagements affichés sous l'accroche — lèvent les freins à l'envoi. */
 const promises = [
@@ -34,14 +42,16 @@ const promises = [
  * FAQ, Avis), sur un décor animé (`ContactBackdrop`) qui marque le point
  * d'arrivée du scroll.
  *
- * À gauche : accroche, engagements et coordonnées directes (NAP issu de
- * `lib/site.ts`, source unique). À droite : le formulaire de demande de devis
- * en trois étapes. Tout le texte est dans le HTML dès le premier rendu ; GSAP
+ * Trois blocs : accroche + engagements, formulaire en une étape, puis contact
+ * direct (téléphone, e-mail, réseaux — issus de `lib/site.ts`, source unique ;
+ * le NAP complet est dans le footer). Desktop : accroche et contact direct à
+ * gauche, formulaire à droite. Mobile : une colonne, formulaire juste après
+ * l'accroche pour qu'il arrive vite à l'écran. Tout le texte est dans le HTML dès le premier rendu ; GSAP
  * ne révèle que des éléments déjà indexables, en cascade au scroll.
  */
 export function Contact() {
   const root = useRef<HTMLElement>(null);
-  const { contact, hours } = site;
+  const { contact } = site;
 
   useGSAP(
     () => {
@@ -73,7 +83,9 @@ export function Contact() {
       <ContactBackdrop />
 
       <Container as="div" className={styles.inner}>
-        {/* --- Colonne gauche : accroche, engagements, coordonnées --- */}
+        {/* Ordre du DOM = ordre de lecture mobile : accroche, formulaire, puis
+            contact direct. En desktop, la grille replace le formulaire dans la
+            colonne de droite (cf. `grid-template-areas`). */}
         <div className={styles.intro}>
           <p className={`${styles.eyebrow} ${styles.reveal}`}>
             <span className={styles.dot} aria-hidden="true" />
@@ -85,9 +97,8 @@ export function Contact() {
           </h2>
 
           <p className={`${styles.lede} ${styles.reveal}`}>
-            Décrivez-nous votre activité et ce que vous attendez de votre site
-            ou de votre outil IA. Nous revenons vers vous avec une proposition
-            claire et un devis détaillé.
+            Laissez votre nom et un moyen de vous joindre&nbsp;: on vous
+            recontacte pour en parler et vous proposer un devis.
           </p>
 
           <ul className={`${styles.promises} ${styles.reveal}`}>
@@ -98,7 +109,16 @@ export function Contact() {
               </li>
             ))}
           </ul>
+        </div>
 
+        <div className={`${styles.formWrap} ${styles.reveal}`}>
+          <div className={styles.formCard}>
+            <ContactForm />
+          </div>
+        </div>
+
+        {/* --- Contact direct : téléphone, e-mail, réseaux --- */}
+        <div className={styles.direct}>
           <p className={`${styles.or} ${styles.reveal}`}>
             <span>Ou directement</span>
           </p>
@@ -136,38 +156,30 @@ export function Contact() {
               />
             </a>
 
-            <p className={styles.channel} data-static="true">
-              <span className={styles.channelIcon} aria-hidden="true">
-                <CalendarBlank size={17} weight="fill" />
-              </span>
-              <span className={styles.channelBody}>
-                <span className={styles.channelLabel}>Rendez-vous</span>
-                <span className={styles.channelValue}>{hours.label}</span>
-              </span>
-            </p>
-
-            <p className={styles.channel} data-static="true">
-              <span className={styles.channelIcon} aria-hidden="true">
-                <MapPin size={17} weight="fill" />
-              </span>
-              <span className={styles.channelBody}>
-                <span className={styles.channelLabel}>
-                  Zone d&apos;intervention
-                </span>
-                <span className={styles.channelValue}>
-                  {contact.address.locality}, {contact.address.area} — bassin
-                  franco-suisse
-                </span>
-              </span>
-            </p>
+            {/* réseaux sociaux — mêmes liens et mêmes règles que le footer */}
+            <div className={styles.socials}>
+              <p className={styles.channelLabel}>Suivez-nous</p>
+              <ul className={styles.socialList}>
+                {site.social.map((item) => {
+                  const Icon = socialIcons[item.icon];
+                  return (
+                    <li key={item.href}>
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="me noopener"
+                        aria-label={`${site.name} sur ${item.label}`}
+                        data-network={item.icon}
+                        className={styles.socialLink}
+                      >
+                        <Icon />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </address>
-        </div>
-
-        {/* --- Colonne droite : formulaire --- */}
-        <div className={`${styles.formWrap} ${styles.reveal}`}>
-          <div className={styles.formCard}>
-            <ContactForm />
-          </div>
         </div>
       </Container>
     </section>

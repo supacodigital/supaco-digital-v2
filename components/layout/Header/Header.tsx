@@ -221,17 +221,12 @@ export function Header() {
               size={scrolled ? "sm" : "md"}
               className={styles.ctaDesktop}
             >
-              Devis
+              Contact
             </Button>
 
             {/* CTA compact mobile */}
-            <Button
-              href="/#contact"
-              size="sm"
-              className={styles.ctaMobile}
-              aria-label="Demander un devis"
-            >
-              Devis
+            <Button href="/#contact" size="sm" className={styles.ctaMobile}>
+              Contact
             </Button>
 
             <button
@@ -334,7 +329,7 @@ export function Header() {
             )}
           </ul>
           <Button href="/#contact" size="lg" fullWidth>
-            Demander un devis
+            Créer mon projet
           </Button>
         </Container>
       </nav>

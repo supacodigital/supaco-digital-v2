@@ -30,7 +30,8 @@ export async function generateMetadata({
 }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const found = getService(slug);
-  if (!found) return {};
+  // slug inconnu → page 404 : pas d'`index` hérité du layout
+  if (!found) return { robots: { index: false, follow: true } };
   const { content } = found;
   const url = `/services/${slug}`;
 
@@ -303,7 +304,7 @@ export default async function ServicePage({
               </p>
             </div>
             <Button href="/#contact" size="lg">
-              Demander un devis
+              Créer mon projet
             </Button>
           </div>
         </Container>

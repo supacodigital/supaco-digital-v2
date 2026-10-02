@@ -110,7 +110,7 @@ export default function ServicesPage() {
           </p>
         </div>
         <Button href="/#contact" size="lg">
-          Demander un devis
+          Créer mon projet
         </Button>
       </section>
     </Container>

@@ -6,6 +6,8 @@
  *     pour pouvoir répondre directement depuis sa boîte) ;
  *  2. un accusé de réception au prospect — son échec ne fait jamais échouer
  *     la demande, l'essentiel étant que l'agence ait reçu le message.
+ * Le prospect laisse un téléphone OU un e-mail : s'il n'a donné qu'un numéro,
+ * pas de `replyTo` ni d'accusé de réception, et l'objet devient « À rappeler ».
  *
  * Config (variables d'environnement, jamais en dur) :
  *  - RESEND_API_KEY   : clé API Resend (obligatoire en production)
@@ -14,7 +16,7 @@
  */
 import { Resend } from "resend";
 import type { ContactData } from "./contact";
-import { projectTypes } from "./contact";
+import { isEmailContact, projectTypes } from "./contact";
 import { site } from "./site";
 
 type SendResult = { ok: true } | { ok: false; reason: string };
@@ -28,8 +30,9 @@ const RECIPIENT = process.env.CONTACT_EMAIL_TO ?? site.contact.email;
 const SENDER =
   process.env.CONTACT_EMAIL_FROM ?? `${site.name} <contact@${site.domain}>`;
 
-/** Libellé lisible du type de projet pour le corps de l'e-mail. */
+/** Libellé lisible du type de projet (facultatif) pour le corps de l'e-mail. */
 function projectTypeLabel(value: ContactData["projectType"]): string {
+  if (!value) return "Non précisé";
   return projectTypes.find((t) => t.value === value)?.label ?? value;
 }
 
@@ -47,19 +50,26 @@ export function buildContactEmail(data: ContactData): {
   subject: string;
   text: string;
   html: string;
-  replyTo: string;
+  replyTo: string | undefined;
 } {
   const type = projectTypeLabel(data.projectType);
+  const byEmail = isEmailContact(data.contact);
+  const contactLabel = byEmail ? "E-mail" : "Téléphone";
+  // lien cliquable : mailto pour un e-mail, tel (sans espaces) pour un numéro
+  const contactHref = byEmail
+    ? `mailto:${data.contact}`
+    : `tel:${data.contact.replace(/[^\d+]/g, "")}`;
+  const message = data.message || "—";
+
   const lines = [
     `Nouvelle demande de contact — ${site.name}`,
     "",
     `Nom            : ${data.name}`,
-    `E-mail         : ${data.email}`,
-    `Téléphone      : ${data.phone || "—"}`,
+    `${contactLabel.padEnd(15)}: ${data.contact}`,
     `Type de projet : ${type}`,
     "",
     "Message :",
-    data.message,
+    message,
   ];
 
   const html = `
@@ -67,20 +77,21 @@ export function buildContactEmail(data: ContactData): {
       <h2 style="margin:0 0 16px;font-size:18px">Nouvelle demande de contact</h2>
       <table cellpadding="0" cellspacing="0" style="border-collapse:collapse">
         <tr><td style="padding:4px 16px 4px 0;color:#64738f">Nom</td><td><strong>${escapeHtml(data.name)}</strong></td></tr>
-        <tr><td style="padding:4px 16px 4px 0;color:#64738f">E-mail</td><td><a href="mailto:${escapeHtml(data.email)}">${escapeHtml(data.email)}</a></td></tr>
-        <tr><td style="padding:4px 16px 4px 0;color:#64738f">Téléphone</td><td>${data.phone ? escapeHtml(data.phone) : "—"}</td></tr>
+        <tr><td style="padding:4px 16px 4px 0;color:#64738f">${contactLabel}</td><td><a href="${escapeHtml(contactHref)}">${escapeHtml(data.contact)}</a></td></tr>
         <tr><td style="padding:4px 16px 4px 0;color:#64738f">Projet</td><td>${escapeHtml(type)}</td></tr>
       </table>
       <p style="margin:20px 0 6px;color:#64738f">Message</p>
-      <div style="padding:14px 16px;background:#f6f8fc;border-radius:10px;white-space:pre-wrap">${escapeHtml(data.message)}</div>
+      <div style="padding:14px 16px;background:#f6f8fc;border-radius:10px;white-space:pre-wrap">${escapeHtml(message)}</div>
     </div>
   `.trim();
 
   return {
-    subject: `Contact site — ${type} — ${data.name}`,
+    subject: byEmail
+      ? `Contact site — ${type} — ${data.name}`
+      : `À rappeler — ${data.name} — ${data.contact}`,
     text: lines.join("\n"),
     html,
-    replyTo: data.email,
+    replyTo: byEmail ? data.contact : undefined,
   };
 }
 
@@ -91,15 +102,17 @@ function buildAcknowledgement(data: ContactData): {
   html: string;
 } {
   const firstName = data.name.split(" ")[0];
+  // le message est facultatif : on ne le rappelle que s'il existe
+  const recap = data.message
+    ? ["Pour rappel, voici votre message :", data.message, ""]
+    : [];
   const text = [
     `Bonjour ${firstName},`,
     "",
     "Merci pour votre demande — elle nous est bien parvenue.",
     "Nous revenons vers vous rapidement avec une première réponse.",
     "",
-    "Pour rappel, voici votre message :",
-    data.message,
-    "",
+    ...recap,
     "À bientôt,",
     site.founder,
     site.name,
@@ -112,8 +125,12 @@ function buildAcknowledgement(data: ContactData): {
       <p>Bonjour ${escapeHtml(firstName)},</p>
       <p>Merci pour votre demande — elle nous est bien parvenue.<br>
          Nous revenons vers vous rapidement avec une première réponse.</p>
-      <p style="margin:20px 0 6px;color:#64738f">Pour rappel, votre message</p>
-      <div style="padding:14px 16px;background:#f6f8fc;border-radius:10px;white-space:pre-wrap">${escapeHtml(data.message)}</div>
+      ${
+        data.message
+          ? `<p style="margin:20px 0 6px;color:#64738f">Pour rappel, votre message</p>
+      <div style="padding:14px 16px;background:#f6f8fc;border-radius:10px;white-space:pre-wrap">${escapeHtml(data.message)}</div>`
+          : ""
+      }
       <p style="margin-top:24px">À bientôt,<br>
         <strong>${escapeHtml(site.founder)}</strong> — ${escapeHtml(site.name)}<br>
         <a href="tel:${site.contact.phoneHref}">${escapeHtml(site.contact.phone)}</a> ·
@@ -150,12 +167,15 @@ async function deliver(data: ContactData): Promise<SendResult> {
     return { ok: false, reason: error.message ?? "resend-error" };
   }
 
-  // Accusé de réception : best-effort. Un échec ici ne doit pas faire croire
-  // au visiteur que sa demande n'est pas passée — elle l'est.
+  // Accusé de réception : seulement si le prospect a laissé un e-mail, et en
+  // best-effort. Un échec ici ne doit pas faire croire au visiteur que sa
+  // demande n'est pas passée — elle l'est.
+  if (!isEmailContact(data.contact)) return { ok: true };
+
   const ack = buildAcknowledgement(data);
   const { error: ackError } = await resend.emails.send({
     from: SENDER,
-    to: [data.email],
+    to: [data.contact],
     replyTo: RECIPIENT,
     subject: ack.subject,
     text: ack.text,
@@ -177,7 +197,7 @@ export async function sendContactEmail(data: ContactData): Promise<SendResult> {
   if (!isProd) {
     console.info("[contact] demande reçue (dev)", {
       to: RECIPIENT,
-      from: data.email,
+      from: data.contact,
       projectType: data.projectType,
       raison: result.reason,
     });

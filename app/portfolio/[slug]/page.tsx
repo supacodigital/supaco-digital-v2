@@ -20,7 +20,8 @@ export async function generateMetadata({
 }: PageProps<"/portfolio/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project) return {};
+  // slug inconnu → page 404 : pas d'`index` hérité du layout
+  if (!project) return { robots: { index: false, follow: true } };
 
   const title = `Étude de cas ${project.name} — ${project.projectType}`;
   const description = project.summary;

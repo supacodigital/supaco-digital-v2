@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "@phosphor-icons/react";
 import { Container } from "@/components/ui/Container";
 import { projects } from "@/lib/site";
@@ -28,6 +29,28 @@ export function Realisations() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const media = useRef<HTMLSpanElement>(null);
+  const [showMedia, setShowMedia] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  // la boucle vidéo (≈ 570 Ko) n'est montée qu'à l'approche de la section :
+  // rien n'est téléchargé au chargement de la page. Sous 960px son conteneur
+  // est en `display: none`, il ne croise donc jamais la fenêtre : la vidéo
+  // n'est jamais chargée sur mobile.
+  useEffect(() => {
+    const el = media.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setShowMedia(true);
+        observer.disconnect();
+      },
+      { rootMargin: "300px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // dot actif (carte la plus proche du bord gauche) + fondu de bord du rail
   const syncScrollState = useCallback(() => {
@@ -107,17 +130,34 @@ export function Realisations() {
           </div>
 
           <div className={styles.headRight}>
-            <span className={styles.photoCard}>
-              <video
-                className={styles.photoImg}
-                autoPlay
-                muted
-                loop
-                playsInline
-                aria-hidden="true"
-              >
-                <source src="/realisations/build-video.mp4" type="video/mp4" />
-              </video>
+            <span className={styles.photoCard} ref={media}>
+              {/* boucle motion design « Sites web » (sources HyperFrames :
+                  assets-source/motion/sites-web) ; image fixe en mouvement réduit */}
+              {showMedia &&
+                (reduceMotion ? (
+                  <Image
+                    src="/services/sites-web-motion.webp"
+                    alt=""
+                    fill
+                    sizes="(min-width: 960px) 520px, 1px"
+                    className={styles.photoImg}
+                  />
+                ) : (
+                  <video
+                    className={styles.photoImg}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    poster="/services/sites-web-motion.webp"
+                    aria-hidden="true"
+                  >
+                    <source
+                      src="/services/sites-web-motion.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
+                ))}
             </span>
           </div>
         </header>

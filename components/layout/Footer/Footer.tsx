@@ -148,7 +148,7 @@ export function Footer() {
 
         <div className={styles.bottom}>
           <p>
-            © {copyrightYears} {site.name} — SIRET {site.legal.siret} ·{" "}
+            © {copyrightYears} {site.name} — SIREN {site.legal.siret} ·{" "}
             {site.legal.rcs}
           </p>
           <p className={styles.vat}>{site.legal.vatNote}</p>

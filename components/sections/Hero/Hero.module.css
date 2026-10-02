@@ -11,39 +11,28 @@
   padding-bottom: clamp(3.5rem, 8vw, 6rem);
 }
 
-/* --- Contenu : aligné à gauche (centré sur mobile) --- */
+/* --- Contenu : centré à toutes les largeurs --- */
 .inner {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   max-width: 62rem;
+  text-align: center;
 }
 
 @media (max-width: 720px) {
-  .inner {
-    align-items: center;
-    text-align: center;
-  }
-
-  /* les largeurs de lecture bridaient un texte aligné à gauche : centré, le
-     texte doit pouvoir occuper toute la colonne */
+  /* sur mobile, la colonne est déjà étroite : le texte peut l'occuper toute */
   .title,
   .lede {
     max-width: none;
-  }
-
-  .actions {
-    justify-content: center;
-  }
-
-  .rating {
-    justify-content: center;
   }
 }
 
 /* --- Titre --- */
 .title {
   max-width: 19ch;
+  /* centré : lignes équilibrées plutôt qu'un dernier mot orphelin */
+  text-wrap: balance;
   font-size: clamp(2.4rem, 6.4vw, 4.5rem);
   font-weight: 600;
   line-height: 1.04;
@@ -63,6 +52,7 @@
 .lede {
   margin-top: 1.5rem;
   max-width: 54ch;
+  text-wrap: balance;
   font-size: clamp(1.02rem, 1.5vw, 1.18rem);
   color: var(--text-secondary);
 }
@@ -71,6 +61,7 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.9rem;
   margin-top: 2.25rem;
 }

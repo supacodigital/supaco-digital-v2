@@ -307,6 +307,37 @@
   color: transparent;
 }
 
+/* --- Mobile : une colonne centrée --- */
+@media (max-width: 719px) {
+  .grid,
+  .area,
+  .bottom {
+    text-align: center;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-inline: auto;
+  }
+  .social {
+    justify-content: center;
+  }
+  .links {
+    align-items: center;
+    margin-left: 0;
+  }
+  .nap {
+    align-items: center;
+  }
+  .areaText {
+    margin-inline: auto;
+  }
+  .bottom {
+    align-items: center;
+  }
+}
+
 @media (min-width: 720px) {
   .grid {
     grid-template-columns: 1.5fr 1fr 1fr;

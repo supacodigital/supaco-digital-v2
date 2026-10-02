@@ -1,133 +1,13 @@
 /*
- * Formulaire de contact en trois étapes — champs en verre sur le thème sombre.
- * Transitions ciblées (jamais `all`), focus clavier visible ; le mouvement des
- * étapes est porté par Framer Motion côté JS (springs interruptibles), le CSS
- * ne gère que les changements d'état (hover, focus, sélection).
+ * Formulaire de contact en une étape — champs en verre sur le thème sombre.
+ * Transitions ciblées (jamais `all`), focus clavier visible ; le CSS ne gère
+ * que les changements d'état (hover, focus, sélection).
  */
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
-}
-
-/* --- Progression --- */
-.progress {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.steps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.1rem;
-  list-style: none;
-}
-
-.stepChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
-  transition: color 220ms ease;
-}
-
-.stepChip[data-state="current"] {
-  color: var(--text-primary);
-}
-
-.stepChip[data-state="done"] {
-  color: var(--text-secondary);
-}
-
-.stepIndex {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 21px;
-  height: 21px;
-  border-radius: 50%;
-  border: 1px solid var(--border-soft);
-  font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
-  transition:
-    background-color 220ms ease,
-    border-color 220ms ease,
-    color 220ms ease;
-}
-
-.stepChip[data-state="current"] .stepIndex {
-  border-color: transparent;
-  background: var(--brand-gradient);
-  color: #fff;
-}
-
-.stepChip[data-state="done"] .stepIndex {
-  border-color: rgba(53, 167, 240, 0.4);
-  color: var(--brand-cyan);
-}
-
-/* barre de progression : `scaleX` animé (GPU) plutôt qu'une largeur */
-.bar {
-  position: relative;
-  height: 2px;
-  border-radius: var(--radius-pill);
-  background: var(--border-hairline);
-  overflow: hidden;
-}
-
-.barFill {
-  display: block;
-  height: 100%;
-  width: 100%;
-  transform-origin: left center;
-  border-radius: inherit;
-  background: var(--brand-gradient);
-}
-
-.hint {
-  font-size: 0.84rem;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-/* --- Scène des étapes ---
-   Hauteur minimale réservée : le pied de formulaire ne saute pas d'une étape
-   à l'autre, et `popLayout` (Framer Motion) sort l'étape quittante du flux. */
-.stage {
-  position: relative;
-  display: grid;
-  /* calé sur l'étape la plus haute (le textarea) : le pied de formulaire ne
-     saute pas d'une étape à l'autre */
-  min-height: 13.5rem;
-}
-
-.panel {
-  grid-area: 1 / 1;
-  min-width: 0;
-}
-
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-/* deux champs côte à côte au-delà de 560px */
-.row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.1rem;
-}
-
-@media (min-width: 560px) {
-  .row {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .field {
@@ -148,6 +28,12 @@
   padding: 0;
 }
 
+/* une <legend> n'est pas un élément flex : le `gap` de `.field` ne s'applique
+   pas, l'écart avec les pastilles se règle donc par une marge */
+legend.label {
+  margin-bottom: 0.75rem;
+}
+
 .label span[aria-hidden="true"] {
   color: var(--brand-cyan);
 }
@@ -155,18 +41,6 @@
 .optional {
   font-weight: 400;
   color: var(--text-muted);
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 /* --- Champs texte --- */
@@ -179,7 +53,8 @@
   border: 1px solid var(--border-soft);
   color: var(--text-primary);
   font: inherit;
-  font-size: 0.95rem;
+  /* 16px minimum : en dessous, iOS zoome sur le champ au focus */
+  font-size: 1rem;
   line-height: 1.5;
   /* on transitionne des couleurs (changement d'état) -> `ease` */
   transition:
@@ -190,8 +65,7 @@
 
 .textarea {
   resize: vertical;
-  /* + le label et son interligne = la hauteur de `.stage` */
-  min-height: 11rem;
+  min-height: 6.5rem;
 }
 
 .input::placeholder,
@@ -222,15 +96,16 @@
   box-shadow: 0 0 0 3px rgba(240, 112, 138, 0.2);
 }
 
-/* --- Étape 1 : choix du type de projet, en cartes --- */
+/* --- Type de projet : pastilles facultatives --- */
 .choices {
-  display: grid;
-  gap: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .choice {
   position: relative;
-  display: block;
+  display: inline-flex;
 }
 
 /* input radio visuellement masqué mais focusable */
@@ -245,37 +120,21 @@
 }
 
 .choiceBody {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.95rem 1.1rem;
-  border-radius: var(--radius-md);
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border-soft);
   background: rgba(8, 11, 20, 0.4);
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--text-secondary);
   transition:
     border-color 160ms ease,
     background-color 160ms ease,
     color 160ms ease,
     transform 140ms var(--ease-out);
-}
-
-.choiceLabel {
-  font-size: 0.98rem;
-  font-weight: 500;
-}
-
-/* pastille de validation : présente dès le départ (scale 0.6, pas 0) pour que
-   l'apparition ait une origine visible */
-.choiceCheck {
-  display: inline-flex;
-  color: var(--brand-cyan);
-  opacity: 0;
-  transform: scale(0.6);
-  transition:
-    opacity 180ms var(--ease-out),
-    transform 180ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -286,7 +145,7 @@
 }
 
 .choiceInput:active + .choiceBody {
-  transform: scale(0.985);
+  transform: scale(0.97);
   transition-duration: 100ms;
 }
 
@@ -294,17 +153,18 @@
   border-color: transparent;
   background: var(--brand-gradient-soft);
   color: var(--text-primary);
-  box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.5);
-}
-
-.choiceInput:checked + .choiceBody .choiceCheck {
-  opacity: 1;
-  transform: scale(1);
+  box-shadow: inset 0 0 0 1px rgba(53, 167, 240, 0.6);
 }
 
 .choiceInput:focus-visible + .choiceBody {
   outline: 2px solid var(--brand-cyan);
   outline-offset: 2px;
+}
+
+.hint {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-muted);
 }
 
 /* --- Erreurs --- */
@@ -339,75 +199,6 @@
   width: 1px;
   height: 1px;
   overflow: hidden;
-}
-
-/* --- Pied : navigation --- */
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  padding-top: 0.25rem;
-  border-top: 1px solid var(--border-hairline);
-}
-
-.actions > :global(button[type="submit"]) {
-  margin-left: auto;
-}
-
-/* mobile : le CTA prend toute la largeur sous le lien « Retour » — le
-   parallélogramme a alors la place d'afficher son libellé et son icône */
-@media (max-width: 559px) {
-  .actions {
-    flex-direction: column-reverse;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .actions > :global(button[type="submit"]) {
-    display: flex;
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .back,
-  .stepCount {
-    align-self: center;
-  }
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0;
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  transition:
-    color 160ms ease,
-    transform 140ms var(--ease-out);
-}
-
-.back:hover {
-  color: var(--text-primary);
-}
-
-.back:active {
-  transform: scale(0.97);
-  transition-duration: 100ms;
-}
-
-.back:focus-visible {
-  outline: 2px solid var(--brand-cyan);
-  outline-offset: 3px;
-}
-
-.stepCount {
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
 }
 
 /* Le `.label` du Button porte `margin-right: -0.18em` pour compenser le
@@ -491,14 +282,11 @@
   .input,
   .textarea,
   .choiceBody,
-  .choiceCheck,
-  .doneReset,
-  .back {
+  .doneReset {
     transition-property: color, background-color, border-color, box-shadow,
       opacity;
   }
-  .choiceInput:active + .choiceBody,
-  .back:active {
+  .choiceInput:active + .choiceBody {
     transform: none;
   }
 }

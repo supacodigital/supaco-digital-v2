@@ -45,16 +45,19 @@
 
 @media (min-width: 960px) {
   .headRight {
-    display: block;
+    display: flex;
+    align-items: center;
   }
 }
 
+/* calée sur le 16:9 de la boucle motion design : la maquette n'est jamais rognée */
 .photoCard {
   position: relative;
   display: block;
   width: 100%;
-  height: 100%;
-  min-height: 320px;
+  aspect-ratio: 16 / 9;
+  /* fond de la boucle vidéo : pas de carte vide le temps qu'elle se monte */
+  background-color: var(--bg-900);
   border-radius: var(--radius-lg);
   overflow: clip;
   box-shadow: 0 20px 40px -20px rgba(1, 26, 66, 0.35);

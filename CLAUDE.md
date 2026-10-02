@@ -39,6 +39,10 @@ Quatre piliers de service :
 - **SaaS sur-mesure**
 - **Automatisation** (flux métier, intégrations)
 
+En complément : une gamme de **produits physiques** qui relient le point de
+vente à la présence en ligne (`products` dans `lib/site.ts`). Premier produit :
+le **badge QR code avis Google**. Pas de prix affiché (« Tarif sur demande »).
+
 ## 4. Tarification (décision : tout sur devis)
 
 **Aucun prix fixe affiché sur le site.** Chaque projet est chiffré sur devis
@@ -228,7 +232,9 @@ Deux variantes du logo existent, à ne pas confondre :
 - `components/layout/Header` — **`position: fixed`, superposé** : transparent en
   haut de page (le hero passe dessous), fond **bleu nuit opaque `#0a1836` + texte
   blanc au scroll** (seuil 24px, `data-scrolled`). Logo à gauche ; nav
-  (MAJUSCULES) + CTA « DEVIS » à droite ; le CTA passe `sm` au scroll. Mobile :
+  (MAJUSCULES, Services + Réalisations + Produits `/#produits` — pas de lien
+  Contact) + CTA « CONTACT »
+  à droite (`/#contact`) ; le CTA passe `sm` au scroll. Mobile :
   mini-CTA + burger ; menu plein écran avec accordéon Services.
   ⚠️ Header hors flux → `<main>` a `padding-top: var(--header-h)` par défaut
   (`globals.css`) ; une section qui gère elle-même cet espace (hero) porte
@@ -243,13 +249,24 @@ Deux variantes du logo existent, à ne pas confondre :
   scrim qui assombrit la page). 4 cartes égales : fond dégradé placeholder
   (`services[].bg` dans `lib/site.ts`) + motif SVG (`ServiceMotif`) + titre
   centré. **Les fonds sont des placeholders** — à remplacer par de vraies photos.
-- `components/sections/Hero` — photo de fond (Mont-Blanc, `public/hero/mont-blanc.webp`,
-  `next/image` fill + priority + blur placeholder) sous un **voile dégradé sombre
-  fort** (`.veil`) qui garantit le contraste WCAG du texte blanc. Parallaxe léger
-  GSAP ScrollTrigger (`yPercent`, scrub, désactivé si `prefers-reduced-motion`).
-  L'accent du titre utilise `--brand-gradient-bright` (cyan clair → bleu moyen,
-  lisible sur photo) — le vrai `--brand-gradient` reste réservé logo + boutons.
-  Pas de quadrillage (retiré). Ghost mark : `SupacoMark variant="mono"` très discret.
+- `components/sections/Hero` — composition **centrée** (titre SEO local, accroche,
+  CTA « Créer mon projet » + « Voir les réalisations », note Google). Fond
+  `HeroBackdrop` : vidéo en boucle sous un **voile centré** (ellipse sombre derrière
+  le texte, bords plus clairs) — contraste mesuré ≥ 8:1 sur le paragraphe. Deux
+  versions : desktop `hero-loop.webm/.mp4` (1920×1080, 2,7 Mo) et **mobile**
+  `hero-loop-mobile.mp4` (bande centrale 540×960, ≈ 540 Ko : `crop=608:1080:656:0`,
+  x264 CRF 34) + posters assortis ; choix via `useMediaQuery("(max-width: 720px)")`.
+  Pas de vidéo en mouvement réduit. L'accent du titre utilise
+  `--brand-gradient-bright` — le vrai `--brand-gradient` reste réservé logo + boutons.
+- `app/mentions-legales` — mentions LCEN + information RGPD du formulaire + cookies
+  (aucun à ce jour). Données dans `site.legal` (éditeur Kevin Khek, EI ; hébergeur
+  Hostinger International Ltd — entité et téléphone à confirmer sur facture).
+  `noindex, follow`, hors sitemap. ⚠️ Ajouter GA4 = mettre à jour la section Cookies.
+- `app/not-found.tsx` — page 404 centrée (grand « 404 » décoratif, retour accueil,
+  contact, raccourcis vers les rubriques). `noindex` (Next + metadata) ; les
+  `generateMetadata` des routes dynamiques renvoient aussi `noindex` si slug inconnu.
+- `lib/useMediaQuery.ts` — media query via `useSyncExternalStore` (pas de setState
+  dans un effet) ; `serverValue` = valeur au rendu serveur / hydratation.
 - `components/sections/Faq` — section **claire** (palette locale `--s-*` comme
   Services / Réalisations), entre `Realisations` et `Contact` sur l'accueil.
   Accordéon `<dl>` sémantique : un seul panneau ouvert (`useState`, premier ouvert
@@ -257,10 +274,29 @@ Deux variantes du logo existent, à ne pas confondre :
   anime `grid-template-rows: 0fr → 1fr` (hauteur fluide sans mesure JS), icône `+`
   qui pivote à `135deg`. Contenu dans `homeFaq` (`lib/site.ts`) → alimente aussi
   le JSON-LD `FAQPage` de `HomeStructuredData`. Révélation GSAP stagger au scroll.
-- `components/sections/Services` — cartes : le **titre** est un `<Link>` vers
-  `/services/[slug]` (maillage interne SEO), le **CTA du pied** (`Button`) va
-  droit au `/#contact`. Hauteur des 4 cartes égalisée par « Sites web » (5
-  livrables vs 4) + `align-items: stretch`. Deux filigranes `SupacoMark mono`
+- `components/sections/Products` — section **sombre** « Produits » entre
+  `Realisations` et `Testimonials` (composant serveur, zéro JS client). Badge avis
+  Google dessiné en CSS + SVG, en léger angle 3D ; son QR code est **réel**
+  (`demoQr.ts`, vise `https://supaco-digital.com`, à regénérer pour changer
+  d'URL). CTA « Commander mon badge » → `/#contact` (pas de type « badge » dans
+  le formulaire : le prospect le précise dans son message).
+- `components/sections/Contact` — formulaire **en une étape** (simplifié le
+  2026-10-03) : obligatoires = nom + **un seul champ « Téléphone ou e-mail »**
+  (validé comme l'un ou l'autre) ; type de projet (pastilles, désélectionnables)
+  et message facultatifs. Côté e-mail (`lib/email.ts`) : contact par téléphone →
+  objet « À rappeler — nom — numéro », pas de `replyTo` ni d'accusé de réception.
+  Trois blocs, dans cet ordre de DOM : accroche (+ 3 engagements), formulaire,
+  contact direct (téléphone, e-mail, réseaux « Suivez-nous » — `site.social`,
+  icône Instagram avec `gradientId` distinct du footer). Desktop : grid-areas
+  « intro form / direct form » (formulaire à droite sur deux rangées). Mobile :
+  une colonne, formulaire juste après l'accroche, téléphone / e-mail en boutons
+  pleine largeur. Colonnes en `minmax(0, …)` (sinon `1fr` débordait de 13px sur
+  mobile). Le NAP complet est dans le footer. Champs à 16px (anti-zoom iOS).
+- `components/sections/Services` — cartes : un seul **CTA en pied**, le `Button`
+  identitaire « Voir plus » vers `/services/[slug]` (maillage interne SEO). Plus
+  de bouton « Demander un devis » dans les cartes (retiré le 2026-10-03). Hauteur des 4 cartes égalisée par
+  `align-items: stretch` (4 livrables chacune depuis le retrait de « Formation à
+  la prise en main » sur « Sites web »). Deux filigranes `SupacoMark mono`
   (haut-droite + gauche à hauteur du titre, rotations opposées).
 - `lib/SmoothScroll` — Lenis + GSAP ticker, respecte `prefers-reduced-motion`.
 
@@ -277,11 +313,23 @@ Deux variantes du logo existent, à ne pas confondre :
   le scrim ferme).
 - Liens sociaux : `rel="me noopener"` (pas `noreferrer`), `target="_blank"`.
 - **Pas de `meta keywords`** (ignoré par Google, retiré du layout).
+- **Longueurs** : `title` ≤ 60 car. et `description` ≤ 155 car. — au-delà Google
+  tronque. Sur les pages à suffixe « — Supaco Digital », seul le suffixe peut
+  dépasser (les mots-clés doivent tenir avant).
+- **Médias sous la ligne de flottaison** : montés à l'approche de la section
+  (`IntersectionObserver`, `rootMargin` 300px), jamais au chargement — cf. vidéo
+  de `Realisations` (jamais chargée sur mobile, image fixe en mouvement réduit).
 - Icônes du header en **SVG inline** (`components/layout/Header/icons.tsx`),
   pas d'import Phosphor dans le composant client.
 - Copyright footer : plage `2025–<année>` calculée au build (stable).
 
 ### Règles UI apprises
+
+- **Mobile (≤ 720px) : titres et textes centrés** dans toutes les sections. Les
+  listes à coches / icônes gardent leur alignement interne mais leur bloc est
+  centré (`width: fit-content; margin-inline: auto`) ; si les lignes sont courtes,
+  la coche coule dans le texte (`inline-block`). Formulaires et longs textes
+  (avis) restent alignés à gauche.
 
 - `[hidden] { display: none !important }` est dans `globals.css` : ne pas
   remettre un `display` explicite qui l'écraserait sur un élément togglé par
@@ -294,3 +342,6 @@ Deux variantes du logo existent, à ne pas confondre :
 - Reset d'état sur changement de route : pattern « setState pendant le rendu »
   avec `prevPathname` en `useState` (pas d'effet, lint-clean).
 - Liens `<Link>` du footer : `prefetch={false}` (évite ~15 prefetch au scroll bas).
+- Révélation GSAP sur un élément qui a une `transition` CSS sur `transform` : pas de
+  `gsap.from` (il lit la fin pendant la transition → éléments figés décalés). Utiliser
+  `gsap.set(…, { transition: "none" })` + `fromTo` + `clearProps` (cf. `Services`).

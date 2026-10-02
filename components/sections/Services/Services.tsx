@@ -2,12 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  ArrowRight,
   Browser,
   ChatCircleDots,
   Check,
@@ -75,17 +73,27 @@ export function Services() {
       if (window.matchMedia("(max-width: 619px)").matches) return;
 
       const cards = gsap.utils.toArray<HTMLElement>(`.${styles.card}`);
-      gsap.from(cards, {
-        opacity: 0,
-        y: 24,
-        duration: 0.55,
-        ease: "power3.out",
-        stagger: 0.09,
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top 72%",
+      // `.card` transitionne `transform` (survol) : un `gsap.from` lirait sa
+      // position de fin pendant cette transition et laisserait des cartes
+      // décalées. On coupe donc la transition le temps de la révélation, on
+      // donne la fin explicitement, puis on rend la main au CSS.
+      gsap.set(cards, { transition: "none" });
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.55,
+          ease: "power3.out",
+          stagger: 0.09,
+          clearProps: "transform,opacity,transition",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top 72%",
+          },
         },
-      });
+      );
     },
     { scope: root },
   );
@@ -119,7 +127,7 @@ export function Services() {
           <p className={styles.lede}>
             De la création de site internet à l&apos;outil métier sur-mesure,
             Supaco Digital couvre toute la chaîne pour les TPE, PME et artisans
-            du Pays de Gex, de l&apos;Ain et de la région de Genève.
+            du Pays de Gex.
           </p>
         </header>
 
@@ -168,31 +176,17 @@ export function Services() {
                 </ul>
 
                 <div className={styles.foot}>
-                  {/* CTA identitaire (même Button que le header) : direct vers
-                      le formulaire de contact. */}
+                  {/* CTA identitaire (même Button que le header) : vers la page
+                      détaillée du service (maillage interne SEO). */}
                   <Button
-                    href="/#contact"
+                    href={`/services/${service.slug}`}
                     size="sm"
                     fullWidth
                     className={styles.cta}
-                    aria-label={`${service.title} — demander un devis`}
-                  >
-                    Demander un devis
-                  </Button>
-                  {/* lien secondaire discret vers la page détaillée du service */}
-                  <Link
-                    href={`/services/${service.slug}`}
-                    className={styles.more}
                     aria-label={`${service.title} — voir plus`}
                   >
                     Voir plus
-                    <ArrowRight
-                      size={14}
-                      weight="bold"
-                      aria-hidden="true"
-                      className={styles.moreIcon}
-                    />
-                  </Link>
+                  </Button>
                 </div>
               </li>
             );

@@ -60,7 +60,7 @@ export function HomeStructuredData() {
       currenciesAccepted: "EUR, CHF",
       parentOrganization: { "@id": orgId },
       description:
-        "Agence web du Pays de Gex : création de sites internet, e-commerce, agents IA, SaaS sur-mesure et automatisation pour les TPE, PME et artisans du bassin franco-suisse.",
+        "Agence web du Pays de Gex : création de sites internet, e-commerce, agents IA, SaaS sur-mesure et automatisation pour les TPE, PME et artisans du bassin franco-suisse. Propose aussi des produits physiques, dont un badge QR code pour récolter des avis Google.",
       slogan: site.tagline,
       knowsAbout: seoKeywords,
       address: {

@@ -1,0 +1,108 @@
+/* Page /mentions-legales — texte long sur le thème sombre global. */
+.wrap {
+  padding-top: clamp(1.5rem, 5vw, 3rem);
+  padding-bottom: var(--space-section);
+}
+
+.head {
+  max-width: 46rem;
+  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.title {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.lede {
+  margin-top: 1rem;
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* --- Corps : sections séparées par un filet --- */
+.body {
+  max-width: 46rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.body section {
+  padding-block: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid var(--border-hairline);
+}
+
+.body h2 {
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.body p {
+  margin-top: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.body a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .body a:hover {
+    text-decoration-color: var(--brand-cyan);
+  }
+}
+
+.body a:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- Fiches « intitulé : valeur » --- */
+.facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.2rem 1.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 640px) {
+  .facts {
+    grid-template-columns: 9rem 1fr;
+  }
+}
+
+.facts dt {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  /* aligne l'intitulé sur la première ligne de la valeur */
+  padding-top: 0.2rem;
+}
+
+.facts dd {
+  margin: 0 0 0.6rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* valeur légale pas encore renseignée : visible, pour ne pas partir en ligne */
+.todo {
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(240, 112, 138, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(240, 112, 138, 0.45);
+  color: #f6a8b6;
+  font-weight: 600;
+}

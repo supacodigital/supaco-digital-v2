@@ -23,22 +23,44 @@
     var(--bg-800);
 }
 
-/* --- Grille : accroche à gauche, formulaire à droite --- */
+/* --- Grille ---
+   Mobile / tablette : une colonne dans l'ordre du DOM (accroche, formulaire,
+   contact direct). Desktop : accroche puis contact direct à gauche, formulaire
+   à droite sur les deux rangées. */
 .inner {
   display: grid;
-  grid-template-columns: 1fr;
+  /* minmax(0, …) : sans lui, `1fr` ne descend pas sous la largeur minimale du
+     contenu — la colonne débordait de 13px sur mobile (marge droite rognée) */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "intro"
+    "form"
+    "direct";
   gap: clamp(2.5rem, 5vw, 4.5rem);
   align-items: start;
 }
 
 @media (min-width: 1000px) {
   .inner {
-    grid-template-columns: 1fr 1.05fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-areas:
+      "intro form"
+      "direct form";
+    /* le surplus de hauteur (formulaire plus haut) va à la dernière rangée :
+       le contact direct reste collé sous l'accroche */
+    grid-template-rows: auto 1fr;
+    row-gap: 0;
   }
 }
 
 /* --- Colonne accroche --- */
 .intro {
+  grid-area: intro;
+  max-width: 34rem;
+}
+
+.direct {
+  grid-area: direct;
   max-width: 34rem;
 }
 
@@ -200,10 +222,6 @@
     transform 140ms var(--ease-out);
 }
 
-.channel[data-static="true"] {
-  cursor: default;
-}
-
 @media (hover: hover) and (pointer: fine) {
   a.channel:hover {
     background-color: rgba(255, 255, 255, 0.045);
@@ -270,11 +288,91 @@ a.channel:focus-visible {
     transform 180ms var(--ease-out);
 }
 
+/* --- Réseaux sociaux, sous l'e-mail ---
+   Alignés sur la colonne d'icônes des coordonnées ; ligne entière quand les
+   coordonnées passent sur deux colonnes (tablette). */
+.socials {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.6rem 0.85rem 0;
+}
+
+.socials .channelLabel {
+  margin: 0;
+}
+
+.socialList {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+/* cible tactile 44px */
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 140ms var(--ease-out);
+}
+
+/* couleurs officielles des marques — au survol uniquement (cf. footer) */
+@media (hover: hover) and (pointer: fine) {
+  .socialLink:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--border-strong);
+  }
+
+  .socialLink[data-network="facebook"]:hover {
+    color: #0866ff;
+    background: rgba(8, 102, 255, 0.12);
+    border-color: rgba(8, 102, 255, 0.4);
+  }
+
+  .socialLink[data-network="linkedin"]:hover {
+    color: #0a66c2;
+    background: rgba(10, 102, 194, 0.14);
+    border-color: rgba(10, 102, 194, 0.45);
+  }
+
+  .socialLink[data-network="instagram"]:hover {
+    background: rgba(225, 48, 108, 0.12);
+    border-color: rgba(225, 48, 108, 0.4);
+  }
+
+  .socialLink[data-network="instagram"]:hover svg {
+    fill: url(#supaco-ig-gradient-contact);
+  }
+}
+
+.socialLink:active {
+  transform: scale(0.95);
+  transition-duration: 100ms;
+}
+
+.socialLink:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 2px;
+}
+
 /* --- Enveloppe du formulaire : carte verre en relief ---
    Le halo dégradé est porté par le wrapper (::before), la carte reste opaque
    par-dessus : pas de `rgba` + `backdrop-filter` seuls, qui laisseraient
    transparaître la grille du décor sous les champs. */
 .formWrap {
+  grid-area: form;
   position: relative;
   /* le dégradé de bordure est peint par le padding du wrapper : la carte
      opaque posée dessus ne laisse dépasser qu'un liseré d'1px */
@@ -305,7 +403,8 @@ a.channel:focus-visible {
   .channel {
     transition-property: background-color, border-color;
   }
-  a.channel:active {
+  a.channel:active,
+  .socialLink:active {
     transform: none;
   }
   .channelArrow {
@@ -314,11 +413,14 @@ a.channel:focus-visible {
   }
 }
 
-/* Mobile : titre et accroche centrés — les listes gardent leur alignement,
-   leur puce/icône est à gauche et un texte centré les désaxerait */
+/* --- Mobile : une colonne centrée ---
+   Accroche centrée, formulaire juste dessous (aligné à gauche : plus lisible
+   pour remplir), puis contact direct en deux gros boutons tactiles centrés. */
 @media (max-width: 720px) {
-  .intro {
+  .intro,
+  .direct {
     margin-inline: auto;
+    width: 100%;
   }
   .eyebrow {
     justify-content: center;
@@ -327,5 +429,74 @@ a.channel:focus-visible {
   .title,
   .lede {
     text-align: center;
+  }
+  /* engagements : chaque ligne centrée, la coche coule avec le texte (elle
+     reste collée au premier mot même quand la ligne passe sur deux lignes) */
+  .promise {
+    display: block;
+    text-align: center;
+  }
+  .tick {
+    display: inline-block;
+    margin: 0 0.55rem 0 0;
+    vertical-align: -0.28em;
+  }
+
+  /* séparateur « Ou directement » : un filet de chaque côté */
+  .or {
+    margin-top: 0;
+  }
+  .or::before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(270deg, var(--border-soft), transparent);
+  }
+
+  /* téléphone / e-mail : boutons pleine largeur, contenu centré */
+  .channels {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+  .channel {
+    display: flex;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 52px;
+    padding: 0.55rem 1rem;
+    border-color: var(--border-soft);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .channelIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  /* l'icône dit déjà « téléphone » / « e-mail » : intitulé gardé pour les
+     lecteurs d'écran seulement */
+  .channel .channelLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .channelValue {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .channelArrow {
+    display: none;
+  }
+
+  .socials {
+    align-items: center;
+    padding: 0.9rem 0 0;
   }
 }

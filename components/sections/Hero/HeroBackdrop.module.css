@@ -1,7 +1,7 @@
 /*
  * Décor du héro — vidéo de fond + voile de lisibilité.
- * Le voile est dissymétrique : il assombrit fortement la gauche (où vit le
- * texte) et laisse respirer la droite, où passe le flux lumineux.
+ * Le voile est centré : il assombrit fortement le milieu (où vit le texte) et
+ * laisse respirer les bords, où le flux lumineux reste visible.
  */
 
 .backdrop {
@@ -22,6 +22,13 @@
   background-position: 50% 50%;
 }
 
+/* téléphone : bande centrale en portrait, comme la vidéo mobile (18 Ko) */
+@media (max-width: 720px) {
+  .poster {
+    background-image: url("/hero/hero-poster-mobile.jpg");
+  }
+}
+
 .video {
   position: absolute;
   inset: 0;
@@ -36,12 +43,11 @@
   position: absolute;
   inset: 0;
   background:
-    /* colonne sombre à gauche, derrière le bloc de texte */
-    linear-gradient(
-      90deg,
-      rgba(5, 7, 13, 0.92) 0%,
-      rgba(5, 7, 13, 0.82) 32%,
-      rgba(5, 7, 13, 0.45) 62%,
+    /* ellipse sombre au centre, derrière le bloc de texte */
+    radial-gradient(
+      ellipse 62% 68% at 50% 50%,
+      rgba(5, 7, 13, 0.9) 0%,
+      rgba(5, 7, 13, 0.82) 55%,
       rgba(5, 7, 13, 0.3) 100%
     ),
     /* assombrissement vertical + fondu vers la section suivante */

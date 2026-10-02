@@ -125,7 +125,7 @@ export function ServiceHero({
 
         <div className={`${styles.actions} ${styles.reveal}`}>
           <Button href="/#contact" size="lg">
-            Demander un devis
+            Créer mon projet
           </Button>
           <a href="#methode" className={styles.secondaryLink}>
             Voir notre méthode

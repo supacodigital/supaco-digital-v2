@@ -19,7 +19,7 @@ const ratingLabel = averageRating.toFixed(1).replace(".", ",");
 
 /**
  * Section héro de la page d'accueil.
- * Composition alignée à gauche : le titre porte le SEO local, la note Google
+ * Composition centrée : le titre porte le SEO local, la note Google
  * réelle est visible dès le premier écran.
  * Le fond est entièrement CSS (cf. HeroBackdrop) — aucune image ni vidéo à
  * charger, le LCP est porté par le texte.
@@ -72,7 +72,7 @@ export function Hero() {
 
         <div className={`${styles.actions} ${styles.reveal}`}>
           <Button href="/#contact" size="lg">
-            Demander un devis
+            Créer mon projet
           </Button>
           <Link href="/#portfolio" className={styles.secondary}>
             Voir les réalisations

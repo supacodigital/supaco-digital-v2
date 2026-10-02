@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
 import { Realisations } from "@/components/sections/Realisations";
+import { Products } from "@/components/sections/Products";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Marquee } from "@/components/ui/Marquee";
@@ -14,9 +15,10 @@ import { site } from "@/lib/site";
  * priment sur le `title.default` du layout.
  */
 export const metadata: Metadata = {
-  title: "Agence web dans le Pays de Gex — sites internet, IA & automatisation",
+  // ≤ 60 / ≤ 155 caractères : au-delà, Google tronque le titre et l'extrait
+  title: "Agence web Pays de Gex : sites internet, IA & automatisation",
   description:
-    "Agence web à Saint-Genis-Pouilly : création de sites internet, e-commerce, agents IA et automatisation pour les TPE, PME et artisans du Pays de Gex, de l'Ain et de la région de Genève.",
+    "Agence web à Saint-Genis-Pouilly : sites internet, e-commerce, agents IA et automatisation pour les TPE, PME et artisans du Pays de Gex et de Genève.",
   alternates: { canonical: "/" },
   openGraph: {
     title:
@@ -29,9 +31,9 @@ export const metadata: Metadata = {
 
 /**
  * Page d'accueil — scroll unique.
- * Sections : héro, bandeau zone d'intervention, services, réalisations, FAQ,
- * avis clients, contact. Le bloc offres viendra s'insérer entre services et
- * réalisations.
+ * Sections : héro, bandeau zone d'intervention, services, réalisations,
+ * produits (badge avis Google), avis clients, contact. Le bloc offres
+ * viendra s'insérer entre services et réalisations.
  */
 export default function HomePage() {
   return (
@@ -41,6 +43,7 @@ export default function HomePage() {
       <Marquee items={site.serviceArea} label="Zone d'intervention" />
       <Services />
       <Realisations />
+      <Products />
       <Testimonials />
       <Contact />
     </>

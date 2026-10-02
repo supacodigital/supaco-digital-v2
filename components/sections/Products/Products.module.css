@@ -1,0 +1,321 @@
+/*
+ * Section « Produits » — sombre, entre deux sections claires (Réalisations et
+ * avis). Badge blanc en relief à gauche, accroche + fiche produit à droite.
+ * Mobile : accroche, badge, puis fiche produit (grid-template-areas).
+ */
+.products {
+  /* --- palette locale du badge (objet imprimé, fond blanc) --- */
+  --badge-surface: #ffffff;
+  --badge-ink: var(--brand-navy);
+  --badge-ink-soft: #4a5875;
+  --badge-star: #fbbc05;
+
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: var(--space-section);
+  background:
+    radial-gradient(
+      60% 55% at 22% 50%,
+      rgba(37, 99, 235, 0.14) 0%,
+      transparent 70%
+    ),
+    var(--bg-800);
+}
+
+.inner {
+  display: grid;
+  grid-template-areas:
+    "head"
+    "visual"
+    "product";
+  row-gap: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+@media (min-width: 960px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-areas:
+      "visual head"
+      "visual product";
+    column-gap: clamp(3rem, 7vw, 6.5rem);
+    row-gap: 2.25rem;
+  }
+
+  .head {
+    align-self: end;
+  }
+
+  .product {
+    align-self: start;
+  }
+}
+
+/* --- Accroche --- */
+.head {
+  grid-area: head;
+  max-width: 36rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.tag {
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(53, 167, 240, 0.35);
+  background: rgba(53, 167, 240, 0.1);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: #8fd0f8;
+}
+
+.title {
+  margin-top: 1rem;
+  font-size: clamp(2.1rem, 4.4vw, 3.1rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+/* accent de texte sur fond sombre : variante éclaircie (contraste WCAG) */
+.accent {
+  background: var(--brand-gradient-bright);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lede {
+  margin-top: 1.1rem;
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* --- Visuel : le badge --- */
+.stage {
+  grid-area: visual;
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-block: 1rem 2.5rem;
+  perspective: 1400px;
+}
+
+@media (min-width: 960px) {
+  .stage {
+    align-self: center;
+  }
+}
+
+/* halo derrière le badge */
+.glow {
+  position: absolute;
+  inset: 12% 8%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(53, 167, 240, 0.32),
+    rgba(37, 99, 235, 0.12) 60%,
+    transparent
+  );
+  filter: blur(24px);
+}
+
+.badge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(250px, 28vw, 330px);
+  padding: 1.6rem 1.5rem 0;
+  border-radius: 28px;
+  background: var(--badge-surface);
+  color: var(--badge-ink);
+  text-align: center;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 40px 80px -30px rgba(0, 0, 0, 0.85),
+    0 18px 40px -24px rgba(37, 99, 235, 0.55);
+  /* léger angle : on lit un objet posé, pas un écran. Pas de reflet en
+     surimpression : il traverserait le QR code et gênerait le scan. */
+  transform: rotateY(8deg) rotateX(3deg) rotateZ(-1deg);
+  transition: transform 320ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stage:hover .badge {
+    transform: rotateY(2deg) rotateX(1deg) rotateZ(-0.25deg);
+  }
+}
+
+.badgeHead {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.badgeLogo {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.badgeTitle {
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.badgeStars {
+  display: inline-flex;
+  gap: 0.15rem;
+  margin-top: 0.6rem;
+  color: var(--badge-star);
+}
+
+.badgeQr {
+  display: block;
+  width: 78%;
+  height: auto;
+  margin-top: 1rem;
+  color: var(--badge-ink);
+}
+
+.badgeHint {
+  margin-top: 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--badge-ink-soft);
+}
+
+/* bandeau du nom de l'établissement — personnalisé sur chaque badge */
+.badgeName {
+  align-self: stretch;
+  margin: 1.3rem -1.5rem 0;
+  padding: 0.75rem 1rem;
+  background: var(--badge-ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+/* ombre portée au sol, sous le badge */
+.floor {
+  position: absolute;
+  bottom: 0.9rem;
+  width: clamp(190px, 22vw, 260px);
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent);
+  filter: blur(6px);
+}
+
+/* --- Fiche produit --- */
+.product {
+  grid-area: product;
+  max-width: 36rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.index {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.productName {
+  margin-top: 0.6rem;
+  font-size: clamp(1.35rem, 2.2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.productText {
+  margin-top: 0.8rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.featureIcon {
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+  color: var(--brand-cyan);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 2rem;
+}
+
+.note {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* --- Mobile : en-tête et fiche centrés ; la liste reste alignée à gauche
+   (coches alignées entre elles) dans un bloc centré --- */
+@media (max-width: 720px) {
+  .head,
+  .product {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .features {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    text-align: left;
+  }
+
+  .actions {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    transition: none;
+  }
+}

@@ -64,6 +64,19 @@ export const site = {
     siret: "945 066 207",
     rcs: "RCS Bourg-en-Bresse 945 066 207",
     vatNote: "TVA non applicable, art. 293 B du CGI",
+    // Mentions légales (LCEN, art. 6) — entreprise individuelle : l'éditeur est
+    // l'entrepreneur lui-même. Si un champ est vidé, la page /mentions-legales
+    // affiche « à compléter » à sa place.
+    owner: "Kevin Khek", // prénom et nom légaux de l'entrepreneur
+    streetAddress: "1 rue de la Prairie", // numéro et rue
+    // hébergeur — entité contractante Hostinger pour un client de l'UE (CGV
+    // Hostinger). Entité et téléphone à vérifier sur une facture Hostinger.
+    host: {
+      name: "Hostinger International Ltd",
+      address: "61 Lordou Vironos Street, 6023 Larnaca, Chypre",
+      phone: "+357 22 232 364",
+      url: "https://www.hostinger.fr",
+    },
   },
 
   // indication de gamme de prix (JSON-LD priceRange) — chaque projet est chiffré
@@ -160,6 +173,7 @@ export const seoKeywords: string[] = [
   "développement d'applications sur-mesure",
   "agent IA pour entreprise",
   "automatisation des tâches",
+  "badge QR code avis Google",
   "création site web Bourg-en-Bresse",
   "webmaster Pays de Gex",
 ];
@@ -177,7 +191,8 @@ export type NavItem = {
 export const mainNav: NavItem[] = [
   { label: "Services", href: "/services", megaMenu: "services" },
   { label: "Réalisations", href: "/#portfolio" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Produits", href: "/#produits" },
+  // pas de lien « Contact » : c'est le CTA du header qui y mène
 ];
 
 /**
@@ -203,7 +218,6 @@ export const services = [
       "SEO local intégré dès la conception",
       "Site rapide et responsive (Core Web Vitals)",
       "Nom de domaine et hébergement en France",
-      "Formation à la prise en main",
     ],
     bg: {
       from: "#0a1830",
@@ -284,6 +298,27 @@ export const services = [
 
 export type Service = (typeof services)[number];
 export type ServiceSlug = Service["slug"];
+
+/**
+ * Produits physiques — gamme qui relie le point de vente à la présence en
+ * ligne. Section « Produits » de l'accueil ; le premier produit est mis en
+ * avant, les suivants s'ajouteront à la suite du tableau.
+ * Pas de prix affiché (cf. tarification sur devis) : le CTA mène au
+ * formulaire de contact.
+ */
+export const products = [
+  {
+    slug: "badge-avis-google",
+    name: "Badge QR code avis Google",
+    pitch:
+      "Vos clients scannent le badge avec l'appareil photo de leur téléphone et arrivent directement sur la page pour laisser un avis sur votre fiche Google. Posé près de la caisse, au comptoir ou sur une table, il transforme un client satisfait en avis visible de tous.",
+    features: [
+      "QR code relié à votre fiche Google Business Profile",
+      "Un scan suffit, aucune application à installer",
+      "Plus d'avis, un atout pour votre référencement local",
+    ],
+  },
+] as const;
 
 /**
  * Contenu long des pages /services/[slug] — rédigé pour le SEO local

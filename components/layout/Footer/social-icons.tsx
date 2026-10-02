@@ -6,7 +6,14 @@
 
 type IconProps = { size?: number };
 
-export function InstagramIcon({ size = 18 }: IconProps) {
+/**
+ * `gradientId` : identifiant du dégradé de survol — à changer quand l'icône est
+ * rendue ailleurs sur la même page que le footer (un id doit rester unique).
+ */
+export function InstagramIcon({
+  size = 18,
+  gradientId = "supaco-ig-gradient",
+}: IconProps & { gradientId?: string }) {
   return (
     <svg
       width={size}
@@ -19,7 +26,7 @@ export function InstagramIcon({ size = 18 }: IconProps) {
       {/* dégradé officiel, appliqué au survol par le CSS du footer */}
       <defs>
         <linearGradient
-          id="supaco-ig-gradient"
+          id={gradientId}
           x1="0"
           y1="24"
           x2="24"
